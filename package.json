@@ -1,0 +1,18 @@
+{
+  "name": "keyboard",
+  "version": "1.0.0",
+  "description": "keyboard",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node fuse.js"
+  },
+  "devDependencies": {
+    "fuse-box": "^2.0.0"
+  },
+  "dependencies": {
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
+    "typescript": "^2.3.3"
+  }
+}
