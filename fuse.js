@@ -1,4 +1,4 @@
-const { WebIndexPlugin, FuseBox } = require('fuse-box');
+const { WebIndexPlugin, FuseBox, BabelPlugin } = require('fuse-box');
 
 const fuse = FuseBox.init({
   homeDir: 'src',
@@ -7,6 +7,7 @@ const fuse = FuseBox.init({
     WebIndexPlugin({
       template: './src/index.html',
     }),
+    BabelPlugin(),
   ],
 });
 

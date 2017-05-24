@@ -8,11 +8,22 @@
     "start": "node fuse.js"
   },
   "devDependencies": {
-    "fuse-box": "^2.0.0"
+    "@types/react": "^15.0.24",
+    "@types/react-dom": "^15.5.0",
+    "babel-core": "^6.24.1",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "babel-preset-latest": "^6.24.1",
+    "fuse-box": "^2.0.0",
+    "redux-logger": "^3.0.6",
+    "typescript": "^2.3.3"
   },
   "dependencies": {
+    "immutable": "^3.8.1",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
-    "typescript": "^2.3.3"
+    "react-redux": "^5.0.5",
+    "redux": "^3.6.0",
+    "redux-immutablejs": "^0.0.8",
+    "styled-components": "^1.4.6"
   }
 }
