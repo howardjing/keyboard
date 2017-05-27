@@ -1,5 +1,12 @@
 import * as React from 'react';
-import Editor from './editor';
+import Editor from './keycap-editor';
+import { injectGlobal } from 'styled-components';
+
+injectGlobal`
+  body {
+    font-family: 'Roboto', sans-serif;
+  }
+`;
 
 const App = ({
 }) => (

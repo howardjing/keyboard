@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux-immutablejs';
-import keyboard from './keyboard/reducer';
+import keycapEditor from './keycap-editor/reducer';
 
 export default combineReducers({
-  keyboard,
+  keycapEditor,
 });

@@ -1,14 +1,18 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import Editor from './editor';
+import Keyboard from '../../domains/keycap-editor/keyboard';
 
 interface PropTypes {
+  keyboard: Keyboard
   base: string,
   modifiers: string,
   handleBaseChange: (e: React.FormEvent<HTMLInputElement>) => any,
   handleModifiersChange: (e: React.FormEvent<HTMLInputElement>) => any,
 }
 
-const Editor: React.SFC<PropTypes> = ({
+const KeycapEditor: React.SFC<PropTypes> = ({
+  keyboard,
   base,
   modifiers,
   handleBaseChange,
@@ -37,6 +41,9 @@ const Editor: React.SFC<PropTypes> = ({
         />
       </label>
     </InputGroup>
+    <Editor
+      keyboard={keyboard}
+    />
   </div>
 );
 
@@ -49,5 +56,5 @@ const Label = styled.span`
   width: 100px;
 `;
 
-export default Editor;
+export default KeycapEditor;
 

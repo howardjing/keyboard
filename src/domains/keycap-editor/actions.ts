@@ -3,7 +3,7 @@ import {
   makeActionCreator,
 } from '../../domains/actions';
 
-const actionCreator = makeActionCreator('keyboard');
+const actionCreator = makeActionCreator('keycap-editor');
 
 const setBase = actionCreator<SetBase>('SET_BASE');
 export interface SetBase {

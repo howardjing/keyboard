@@ -5,10 +5,12 @@ import {
   setBase, SetBase,
   setModifiers, SetModifiers,
 } from './actions';
+import Keyboard from './keyboard';
 
-class Keyboard extends Record({
+class KeycapEditor extends Record({
   base: '',
   modifiers: '',
+  keyboard: Keyboard.build(),
 }) {
   getBase(): string {
     return this.get('base');
@@ -17,15 +19,19 @@ class Keyboard extends Record({
   getModifiers(): string {
     return this.get('modifiers');
   }
+
+  getKeyboard(): Keyboard {
+    return this.get('keyboard');
+  }
 }
 
-const initialState = new Keyboard();
+const initialState = new KeycapEditor();
 
-const handleSetBase = (state: Keyboard, action: Action<SetBase>) => (
+const handleSetBase = (state: KeycapEditor, action: Action<SetBase>) => (
   state.set('base', action.payload.base)
 );
 
-const handleSetModifiers = (state: Keyboard, action: Action<SetModifiers>) => (
+const handleSetModifiers = (state: KeycapEditor, action: Action<SetModifiers>) => (
   state.set('modifiers', action.payload.modifiers)
 );
 
@@ -35,5 +41,5 @@ export default createReducer(initialState, {
 });
 
 export {
-  Keyboard,
+  KeycapEditor,
 };
