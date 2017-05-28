@@ -5,7 +5,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "node fuse.js"
+    "start": "node fuse.js",
+    "bundle-production": "node fuse.js bundle-production"
   },
   "devDependencies": {
     "@types/react": "^15.0.24",
@@ -27,6 +28,7 @@
     "react-redux": "^5.0.5",
     "redux": "^3.6.0",
     "redux-immutablejs": "^0.0.8",
-    "styled-components": "^1.4.6"
+    "styled-components": "^1.4.6",
+    "uglify-js": "^2.8.27"
   }
 }

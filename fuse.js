@@ -1,23 +1,54 @@
-const { WebIndexPlugin, FuseBox, BabelPlugin } = require('fuse-box');
+const { WebIndexPlugin, FuseBox, EnvPlugin, BabelPlugin, UglifyJSPlugin } = require('fuse-box');
 
-const fuse = FuseBox.init({
-  homeDir: 'src',
-  output: 'dist/$name.js',
-  plugins: [
+const buildFuse = (production) => {
+
+  const plugins = [
     WebIndexPlugin({
       template: './src/index.html',
     }),
-    BabelPlugin(),
-  ],
-});
+    BabelPlugin({
+      config: {
+        presets: ['es2015']
+      }
+    }),
+    EnvPlugin({ NODE_ENV: production ? 'production' : 'development' }),
+  ];
 
-fuse.dev({});
+  if (production) {
+    plugins.push(UglifyJSPlugin());
+  }
 
-fuse
-  .bundle('app')
-  .watch()
-  .hmr()
-  .sourceMaps(true)
-  .instructions('>index.tsx');
+  return (
+    FuseBox.init({
+      homeDir: 'src',
+      output: 'dist/$name.js',
+      hash: production,
+      cache: !production,
+      plugins,
+    })
+  );
+}
 
-fuse.run();
+// bundle for prod
+if (process.argv[2] === 'bundle-production') {
+  const fuse = buildFuse(true);
+
+  fuse
+    .bundle('app')
+    .instructions('>index.tsx');
+
+  fuse.run();
+
+// set up dev server
+} else {
+  const fuse = buildFuse(false);
+  fuse.dev({});
+
+  fuse.bundle('app')
+    .watch()
+    .hmr()
+    .sourceMaps(true)
+    .instructions('>index.tsx')
+
+  fuse.run();
+}
