@@ -8,6 +8,7 @@ export default (middleware = [], initialState = Map()) => {
   const finalizedMiddleware = middleware.concat([
     createLogger(),
   ]);
+
   return createStore(
     reducer,
     initialState,

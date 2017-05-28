@@ -2,42 +2,60 @@ import * as React from 'react';
 import styled from 'styled-components';
 import Editor from './editor';
 import Keyboard from '../../domains/keycap-editor/keyboard';
+import {
+  Section,
+} from '../../domains/keycap-editor/reducer';
 
 interface PropTypes {
-  keyboard: Keyboard
-  base: string,
-  modifiers: string,
-  handleBaseChange: (e: React.FormEvent<HTMLInputElement>) => any,
-  handleModifiersChange: (e: React.FormEvent<HTMLInputElement>) => any,
+  keyboard: Keyboard,
+  section: Section,
+  backgroundColor: string | null,
+  legendColor: string | null,
+  handleSectionChange: (e: React.FormEvent<HTMLSelectElement>) => any,
+  handleBackgroundColorChange: (e: React.FormEvent<HTMLInputElement>) => any,
+  handleLegendColorChange: (e: React.FormEvent<HTMLInputElement>) => any,
 }
 
 const KeycapEditor: React.SFC<PropTypes> = ({
   keyboard,
-  base,
-  modifiers,
-  handleBaseChange,
-  handleModifiersChange,
+  section,
+  backgroundColor,
+  legendColor,
+  handleSectionChange,
+  handleBackgroundColorChange,
+  handleLegendColorChange,
 }) => (
   <div>
     <InputGroup>
       <label>
-        <Label>Base</Label>
+        <Label>Section</Label>
+        <select
+          onChange={handleSectionChange}
+        >
+          <option value="base">Base</option>
+          <option value="modifiers">Modifiers</option>
+        </select>
+      </label>
+    </InputGroup>
+    <InputGroup>
+      <label>
+        <Label>Background color</Label>
         <input
           type="text"
-          value={base}
-          placeholder="#eee"
-          onChange={handleBaseChange}
+          value={backgroundColor}
+          onChange={handleBackgroundColorChange}
+          placeholder="#fff"
         />
       </label>
     </InputGroup>
     <InputGroup>
       <label>
-        <Label>Modifiers</Label>
+        <Label>Legend color</Label>
         <input
           type="text"
-          value={modifiers}
-          placeholder="#eee"
-          onChange={handleModifiersChange}
+          value={legendColor}
+          placeholder="#000"
+          onChange={handleLegendColorChange}
         />
       </label>
     </InputGroup>
@@ -53,7 +71,7 @@ const InputGroup = styled.div`
 
 const Label = styled.span`
   display: inline-block;
-  width: 100px;
+  width: 140px;
 `;
 
 export default KeycapEditor;

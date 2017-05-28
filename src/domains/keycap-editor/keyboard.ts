@@ -142,7 +142,7 @@ const NAVIGATION = section(
 
 const ARROWS = section(
   group(
-    UP,
+    UP
   ),
   group(
     LEFT, DOWN, RIGHT,
@@ -155,35 +155,162 @@ const instantiateSection = (section: List<List<() => Keycap>>): List<List<Keycap
   )
 );
 
+const identity = x => x;
+
+const toIds = (section: List<List<Keycap>>): List<List<number>> => (
+  <List<List<number>>>section.map(group =>
+    group.map(keycap => keycap.getId())
+  )
+);
+
 class Keyboard extends Record({
   contextual: section(),
   alphanumeric: section(),
   navigation: section(),
   arrows: section(),
+  keycaps: Map(),
 }) {
   static build(): Keyboard {
+    const contextual = instantiateSection(CONTEXTUAL);
+    const alphanumeric = instantiateSection(ALPHANUMERIC);
+    const navigation = instantiateSection(NAVIGATION);
+    const arrows = instantiateSection(ARROWS);
+
+    const keycaps = <List<Keycap>>contextual.flatMap(identity)
+      .concat(alphanumeric.flatMap(identity))
+      .concat(navigation.flatMap(identity))
+      .concat(arrows.flatMap(identity));
+
+    const keycapIds = <List<number>>keycaps.map((keycap) => keycap.getId());
+    const keycapMapping = Map(keycapIds.zip(keycaps));
+
     return new this({
-      contextual: instantiateSection(CONTEXTUAL),
-      alphanumeric: instantiateSection(ALPHANUMERIC),
-      navigation: instantiateSection(NAVIGATION),
-      arrows: instantiateSection(ARROWS),
+      contextual: toIds(contextual),
+      alphanumeric: toIds(alphanumeric),
+      navigation: toIds(navigation),
+      arrows: toIds(arrows),
+      keycaps: keycapMapping,
     });
   }
 
+  private getKey(keyId: number): Keycap | null {
+    return this.getIn(['keycaps', keyId]) || null;
+  }
+
+  private getKeys(keyIds: List<List<number>>): List<List<Keycap>> {
+    return <List<List<Keycap>>>keyIds.map(group => group.map(id =>
+      this.getKey(id)
+    ).filter(keycap =>
+      keycap !== null)
+    );
+  }
+
+  /**
+   * top row from esc to pause
+   */
   getContextual(): List<List<Keycap>> {
-    return this.get('contextual');
+    const contextual: List<List<number>> = this.get('contextual');
+    return this.getKeys(contextual);
   }
 
+  /**
+   * keys for 60%
+   */
   getAlphanumeric(): List<List<Keycap>> {
-    return this.get('alphanumeric');
+    const alphanumeric: List<List<number>> = this.get('alphanumeric');
+    return this.getKeys(alphanumeric);
   }
 
+  /**
+   * ins / del / home / end / page up / page down
+   */
   getNavigation(): List<List<Keycap>> {
-    return this.get('navigation');
+    const navigation: List<List<number>> = this.get('navigation');
+    return this.getKeys(navigation);
   }
 
+  /**
+   * arrows
+   */
   getArrows(): List<List<Keycap>> {
-    return this.get('arrows');
+    const arrows: List<List<number>> = this.get('arrows');
+    return this.getKeys(arrows);
+  }
+
+  getModifiers(): List<Keycap> {
+    const topRow = this.getContextual().flatMap(identity);
+    const navigation = this.getNavigation().flatMap(identity);
+    const arrows = this.getArrows().flatMap(identity);
+
+    const alphanumeric = this.getAlphanumeric();
+
+    const backspace = alphanumeric.get(0).last();
+    const tab = alphanumeric.get(1).first();
+    const capslock = alphanumeric.get(2).first();
+    const enter = alphanumeric.get(2).last();
+    const leftShift = alphanumeric.get(3).first();
+    const rightShift = alphanumeric.get(3).last();
+
+    const leftMods = alphanumeric.get(4).take(3);
+    const rightMods = alphanumeric.get(4).skip(4);
+
+    return <List<Keycap>>topRow
+      .concat(navigation)
+      .concat(arrows)
+      .concat(List.of(
+        backspace,
+        tab,
+        capslock,
+        enter,
+        leftShift,
+        rightShift,
+      ))
+      .concat(leftMods)
+      .concat(rightMods);
+  }
+
+  getBase(): List<Keycap> {
+    const alphanumeric = this.getAlphanumeric();
+
+    const numbers = alphanumeric.get(0).skipLast(1);
+    const qwerty = alphanumeric.get(1).skip(1);
+    const asdf = alphanumeric.get(2).skip(1).skipLast(1);
+    const zxcv = alphanumeric.get(3).skip(1).skipLast(1);
+
+    const space = alphanumeric.get(4).get(3);
+
+    return <List<Keycap>>numbers
+      .concat(qwerty)
+      .concat(asdf)
+      .concat(zxcv)
+      .concat(List.of(space));
+  }
+
+  private setKeycaps(keycaps: List<Keycap>, updater: (keycap: Keycap) => Keycap): this {
+    return <this>this.withMutations(keyboard => {
+      keycaps.forEach(keycap => {
+        const oldKeycap = this.getIn(['keycaps', keycap.getId()]);
+        if (!oldKeycap) { return; }
+
+        // not sure if updateIn can be used with withMutations
+        keyboard.setIn(
+          ['keycaps', keycap.getId()],
+          updater(oldKeycap),
+        );
+      });
+    })
+  }
+
+  setBackgroundColors(keycaps: List<Keycap>, color: string): this {
+    return this.setKeycaps(keycaps, (keycap) =>
+      keycap.setBackgroundColor(color)
+    );
+  }
+
+  setLegendColors(keycaps: List<Keycap>, color: string): this {
+    return this.setKeycaps(keycaps, (keycap) =>
+      keycap.setLegendColor(color)
+    );
   }
 }
 
@@ -192,18 +319,32 @@ class Keycap extends Record({
   primaryLabel: "",
   secondaryLabel: "",
   width: 1,
+  backgroundColor: "#787667",
+  legendColor: "#000",
 }) {
   static build(
     primaryLabel: string = '',
     secondaryLabel: string = '',
     width: number = 1,
+    backgroundColor: string | undefined = undefined,
+    legendColor: string | undefined = undefined,
   ): Keycap {
-    return new this({
+    const params = {
       id: id(),
       primaryLabel,
       secondaryLabel,
       width,
+      backgroundColor,
+      legendColor,
+    }
+
+    Object.keys(params).forEach((key) => {
+      if (params[key] === undefined) {
+        delete params[key];
+      }
     });
+
+    return new this(params);
   }
 
   getId(): number {
@@ -221,6 +362,23 @@ class Keycap extends Record({
   getWidth(): number {
     return this.get('width');
   }
+
+  getBackgroundColor(): string {
+    return this.get('backgroundColor');
+  }
+
+  getLegendColor(): string {
+    return this.get('legendColor');
+  }
+
+  setBackgroundColor(color: string): this {
+    return <this>this.set('backgroundColor', color);
+  }
+
+  setLegendColor(color: string): this {
+    return <this>this.set('legendColor', color);
+  }
 }
 
 export default Keyboard;
+export { Keycap };

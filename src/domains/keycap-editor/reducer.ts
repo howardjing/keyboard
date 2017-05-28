@@ -1,15 +1,35 @@
-import { Record } from 'immutable';
+import { Record, List } from 'immutable';
 import { createReducer } from 'redux-immutablejs';
 import { Action } from '../../domains/actions';
 import {
-  setBase, SetBase,
-  setModifiers, SetModifiers,
+  setActiveSection, SetActiveSection,
+  setActiveBackgroundColor, SetActiveBackgroundColor,
+  setActiveLegendColor, SetActiveLegendColor,
 } from './actions';
-import Keyboard from './keyboard';
+import Keyboard, { Keycap } from './keyboard';
+
+const whenConsistent = <T, K>(
+  list: List<T>,
+  getter: (t: T) => K,
+): K | null => {
+  const first = list.first();
+  if (!first) { return null; }
+  const val = getter(first);
+
+  if (list.skip(1).every((t) => getter(t) === val)) {
+    return val;
+  }
+
+  return null;
+}
+
+type Section = 'base' | 'modifiers' | 'custom';
+const isSection = (x: any): x is Section => {
+  return x === 'base' || x === 'modifiers' || x === 'custom';
+}
 
 class KeycapEditor extends Record({
-  base: '',
-  modifiers: '',
+  activeSection: 'base',
   keyboard: Keyboard.build(),
 }) {
   getBase(): string {
@@ -23,23 +43,63 @@ class KeycapEditor extends Record({
   getKeyboard(): Keyboard {
     return this.get('keyboard');
   }
+
+  getActiveSection(): Section {
+    return this.get('activeSection');
+  }
+
+  getActiveSectionKeys(): List<Keycap> {
+    const activeSection = this.getActiveSection();
+    if (activeSection === 'base') {
+      return this.getKeyboard().getBase();
+    } else if (activeSection === 'modifiers') {
+      return this.getKeyboard().getModifiers();
+    } else {
+      return <List<Keycap>>List();
+    }
+  }
+
+  getActiveBackgroundColor(): string | null {
+    return whenConsistent(this.getActiveSectionKeys(), (key) =>
+      key.getBackgroundColor()
+    );
+  }
+
+  getActiveLegendColor(): string | null {
+    return whenConsistent(this.getActiveSectionKeys(), (key) =>
+      key.getLegendColor()
+    );
+  }
 }
 
 const initialState = new KeycapEditor();
 
-const handleSetBase = (state: KeycapEditor, action: Action<SetBase>) => (
-  state.set('base', action.payload.base)
+const handleSetActiveSection = (state: KeycapEditor, action: Action<SetActiveSection>) => (
+  state.set('activeSection', action.payload.section)
 );
 
-const handleSetModifiers = (state: KeycapEditor, action: Action<SetModifiers>) => (
-  state.set('modifiers', action.payload.modifiers)
-);
+const handleSetActiveBackgroundColor =
+  (state: KeycapEditor, action: Action<SetActiveBackgroundColor>) => (
+    state.update('keyboard', (keyboard: Keyboard) =>
+      keyboard.setBackgroundColors(state.getActiveSectionKeys(), action.payload.backgroundColor)
+    )
+  );
+
+const handleSetActiveLegendColor =
+  (state: KeycapEditor, action: Action<SetActiveLegendColor>) => (
+    state.update('keyboard', (keyboard: Keyboard) =>
+      keyboard.setLegendColors(state.getActiveSectionKeys(), action.payload.legendColor)
+    )
+  )
 
 export default createReducer(initialState, {
-  [setBase.type]: handleSetBase,
-  [setModifiers.type]: handleSetModifiers,
+  [setActiveSection.type]: handleSetActiveSection,
+  [setActiveBackgroundColor.type]: handleSetActiveBackgroundColor,
+  [setActiveLegendColor.type]: handleSetActiveLegendColor,
 });
 
 export {
   KeycapEditor,
+  Section,
+  isSection
 };

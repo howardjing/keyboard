@@ -2,45 +2,77 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { getEditor } from '../../domains/keycap-editor/selectors';
-import { setBase, setModifiers } from '../../domains/keycap-editor/actions';
+import {
+  setActiveSection,
+  setActiveBackgroundColor,
+  setActiveLegendColor,
+} from '../../domains/keycap-editor/actions';
 import Keyboard from '../../domains/keycap-editor/keyboard';
+import {
+  Section,
+  isSection,
+} from '../../domains/keycap-editor/reducer';
 import Component from './component';
 
 interface PropTypes {
-  base: string,
-  modifiers: string,
   keyboard: Keyboard,
-  handleBaseChange: (e: React.FormEvent<HTMLInputElement>) => any,
-  handleModifiersChange: (e: React.FormEvent<HTMLInputElement>) => any,
+  section: Section,
+  backgroundColor: string | null,
+  legendColor: string | null,
+  handleSectionChange: (e: React.FormEvent<HTMLSelectElement>) => any,
+  handleBackgroundColorChange: (e: React.FormEvent<HTMLInputElement>) => any,
+  handleLegendColorChange: (e: React.FormEvent<HTMLInputElement>) => any,
 }
 
 const mapStateToProps = (state) => {
   const editor = getEditor(state);
   return {
     keyboard: editor.getKeyboard(),
-    base: editor.getBase(),
-    modifiers: editor.getModifiers(),
+    section: editor.getActiveSection(),
+    backgroundColor: editor.getActiveBackgroundColor(),
+    legendColor: editor.getActiveLegendColor(),
   };
 };
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  handleBaseChange: (e) => setBase({ base: e.target.value }),
-  handleModifiersChange: (e) => setModifiers({ modifiers: e.target.value }),
+  handleSectionChange: (e) => {
+    const val = e.target.value;
+    if (isSection(val)) {
+      return setActiveSection({ section: val });
+    } else {
+      return ({
+        type: 'identity',
+      });
+    }
+  },
+
+  handleBackgroundColorChange: (e) => setActiveBackgroundColor({
+    backgroundColor: e.target.value,
+  }),
+
+  handleLegendColorChange: (e) => setActiveLegendColor({
+    legendColor: e.target.value,
+  }),
 }, dispatch);
 
 const Editor: React.SFC<PropTypes> = ({
   keyboard,
-  base,
-  modifiers,
-  handleBaseChange,
-  handleModifiersChange,
+  section,
+  backgroundColor,
+  legendColor,
+  handleSectionChange,
+  handleBackgroundColorChange,
+  handleLegendColorChange,
 }) => (
+
   <Component
     keyboard={keyboard}
-    base={base}
-    modifiers={modifiers}
-    handleBaseChange={handleBaseChange}
-    handleModifiersChange={handleModifiersChange}
+    section={section}
+    backgroundColor={backgroundColor}
+    legendColor={legendColor}
+    handleSectionChange={handleSectionChange}
+    handleBackgroundColorChange={handleBackgroundColorChange}
+    handleLegendColorChange={handleLegendColorChange}
   />
 );
 

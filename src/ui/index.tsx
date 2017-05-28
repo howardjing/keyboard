@@ -11,7 +11,7 @@ injectGlobal`
 const App = ({
 }) => (
   <div>
-    <h3>Keyboard~</h3>
+    <h3>Keycap Renderer</h3>
     <Editor />
   </div>
 );

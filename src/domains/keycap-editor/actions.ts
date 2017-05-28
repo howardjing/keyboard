@@ -3,19 +3,31 @@ import {
   makeActionCreator,
 } from '../../domains/actions';
 
+import {
+  Section
+} from './reducer';
+
 const actionCreator = makeActionCreator('keycap-editor');
 
-const setBase = actionCreator<SetBase>('SET_BASE');
-export interface SetBase {
-  base: string;
+const setActiveSection = actionCreator<SetActiveSection>('SET_ACTIVE_SECTION');
+export interface SetActiveSection {
+  section: Section,
+};
+
+const setActiveBackgroundColor =
+  actionCreator<SetActiveBackgroundColor>('SET_ACTIVE_BACKGROUND_COLOR');
+export interface SetActiveBackgroundColor {
+  backgroundColor: string,
 }
 
-const setModifiers = actionCreator<SetModifiers>('SET_MODIFERS');
-export interface SetModifiers {
-  modifiers: string;
+const setActiveLegendColor =
+  actionCreator<SetActiveLegendColor>('SET_ACTIVE_LEGEND_COLOR');
+export interface SetActiveLegendColor {
+  legendColor: string,
 }
 
 export {
-  setBase,
-  setModifiers,
+  setActiveSection,
+  setActiveBackgroundColor,
+  setActiveLegendColor,
 };
