@@ -3,6 +3,7 @@ const { WebIndexPlugin, FuseBox, EnvPlugin, BabelPlugin, UglifyJSPlugin } = requ
 const buildFuse = (production) => {
 
   const plugins = [
+    EnvPlugin({ NODE_ENV: production ? 'production' : 'development' }),
     WebIndexPlugin({
       template: './src/index.html',
     }),
@@ -11,7 +12,6 @@ const buildFuse = (production) => {
         presets: ['es2015']
       }
     }),
-    EnvPlugin({ NODE_ENV: production ? 'production' : 'development' }),
   ];
 
   if (production) {
