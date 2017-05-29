@@ -39,7 +39,10 @@ class KeycapEditor extends Record({
 }) {
   static build(): KeycapEditor {
     const keyboard = Keyboard.build();
-    const activeKeyIds = keyboard.getModifiers().map(keycap => keycap.getId());
+    const activeKeyIds = keyboard
+      .getModifiers()
+      .map(keycap => keycap.getId())
+      .toSet();
 
     return new this({
       keyboard,
