@@ -1,13 +1,15 @@
 import * as React from 'react';
+import { List } from 'immutable';
 import styled from 'styled-components';
 import Editor from './editor';
-import Keyboard from '../../domains/keycap-editor/keyboard';
+import Keyboard, { Keycap } from '../../domains/keycap-editor/keyboard';
 import {
   Section,
 } from '../../domains/keycap-editor/reducer';
 
 interface PropTypes {
   keyboard: Keyboard,
+  activeKeys: List<Keycap>
   section: Section,
   backgroundColor: string | null,
   legendColor: string | null,
@@ -18,6 +20,7 @@ interface PropTypes {
 
 const KeycapEditor: React.SFC<PropTypes> = ({
   keyboard,
+  activeKeys,
   section,
   backgroundColor,
   legendColor,
@@ -61,6 +64,7 @@ const KeycapEditor: React.SFC<PropTypes> = ({
     </InputGroup>
     <Editor
       keyboard={keyboard}
+      activeKeys={activeKeys}
     />
   </div>
 );

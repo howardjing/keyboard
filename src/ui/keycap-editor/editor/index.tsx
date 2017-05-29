@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { List } from 'immutable';
+import { List, Map, Set } from 'immutable';
 import styled from 'styled-components';
 import { darken } from 'polished';
 import Keyboard, { Keycap as Cap } from '../../../domains/keycap-editor/keyboard';
@@ -7,8 +7,10 @@ import Keycap, { KEYCAP_BASE } from './keycap';
 
 const Editor: React.SFC<{
   keyboard: Keyboard,
+  activeKeys: List<Cap>
 }> = ({
   keyboard,
+  activeKeys: _activeKeys,
 }) => {
   const contextual = keyboard.getContextual();
   const escape = contextual.get(0);
@@ -25,22 +27,39 @@ const Editor: React.SFC<{
   const up = arrows.get(0);
   const left = arrows.get(1);
 
+  const activeKeys = _activeKeys.toSet();
+
   return (
     <Frame>
       <Contextual>
         <PrimarySectionContextual>
           <EscKeycaps>
-            <Keycaps keycaps={escape} />
+            <Keycaps
+              keycaps={escape}
+              activeKeys={activeKeys}
+            />
           </EscKeycaps>
           <FunctionKeycaps>
-            <Keycaps keycaps={f1} />
-            <Keycaps keycaps={f5} />
-            <Keycaps keycaps={f9} />
+            <Keycaps
+              keycaps={f1}
+              activeKeys={activeKeys}
+            />
+            <Keycaps
+              keycaps={f5}
+              activeKeys={activeKeys}
+            />
+            <Keycaps
+              keycaps={f9}
+              activeKeys={activeKeys}
+            />
           </FunctionKeycaps>
         </PrimarySectionContextual>
         <SecondarySection>
           <PrintKeycaps>
-           <Keycaps keycaps={print} />
+           <Keycaps
+             keycaps={print}
+             activeKeys={activeKeys}
+           />
           </PrintKeycaps>
         </SecondarySection>
       </Contextual>
@@ -50,6 +69,7 @@ const Editor: React.SFC<{
             <Keycaps
               key={`alpha-${i}`}
               keycaps={group}
+              activeKeys={activeKeys}
             />
           ))}
         </PrimarySection>
@@ -59,12 +79,21 @@ const Editor: React.SFC<{
               <Keycaps
                 key={`nav-${i}`}
                 keycaps={group}
+                activeKeys={activeKeys}
               />
             ))}
           </div>
           <div>
-            <Up><Keycaps keycaps={up} /></Up>
-            <Keycaps keycaps={left} />
+            <Up>
+              <Keycaps
+                keycaps={up}
+                activeKeys={activeKeys}
+              />
+            </Up>
+            <Keycaps
+              keycaps={left}
+              activeKeys={activeKeys}
+            />
           </div>
         </SecondarySection>
       </SectionWrapper>
@@ -74,14 +103,17 @@ const Editor: React.SFC<{
 
 const Keycaps: React.SFC<{
   keycaps: List<Cap>,
+  activeKeys: Set<Cap>,
 }> = ({
   keycaps,
+  activeKeys,
 }) => (
   <Row keycaps={keycaps}>
     {keycaps.map(keycap => (
       <Keycap
         key={keycap.getId()}
         keycap={keycap}
+        isActive={activeKeys.contains(keycap)}
       />
     ))}
   </Row>

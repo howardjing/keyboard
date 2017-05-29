@@ -6,9 +6,11 @@ import { Keycap as Cap } from '../../../domains/keycap-editor/keyboard';
 const KEYCAP_BASE = 50;
 
 const Keycap: React.SFC<{
-  keycap: Cap
+  keycap: Cap,
+  isActive: boolean,
 }> = ({
   keycap,
+  isActive,
 }) => {
   const width = keycap.getWidth();
   const backgroundColor = keycap.getBackgroundColor();
@@ -20,6 +22,7 @@ const Keycap: React.SFC<{
     <Outercap
       width={width}
       backgroundColor={backgroundColor}
+      isActive={isActive}
     >
       <Innercap
         backgroundColor={backgroundColor}
@@ -34,8 +37,9 @@ const Keycap: React.SFC<{
 
 const _Outercap: React.SFC<{
   className?: string,
-  width: number,
+  width: number
   backgroundColor: string,
+  isActive: boolean,
 }> = ({
   className,
   width,
@@ -56,6 +60,7 @@ const Outercap = styled(_Outercap)`
   width: ${props => props.width * KEYCAP_BASE}px;
   height: ${() => KEYCAP_BASE}px;
   margin: 1px 0;
+  box-shadow: ${({ isActive }) => isActive ? '0 0 16px #a0c8f0' : 'none' };
 `;
 
 const _Innercap: React.SFC<{

@@ -48,7 +48,7 @@ class KeycapEditor extends Record({
     return this.get('activeSection');
   }
 
-  getActiveSectionKeys(): List<Keycap> {
+  getActiveKeys(): List<Keycap> {
     const activeSection = this.getActiveSection();
     if (activeSection === 'base') {
       return this.getKeyboard().getBase();
@@ -60,13 +60,13 @@ class KeycapEditor extends Record({
   }
 
   getActiveBackgroundColor(): string | null {
-    return whenConsistent(this.getActiveSectionKeys(), (key) =>
+    return whenConsistent(this.getActiveKeys(), (key) =>
       key.getBackgroundColor()
     );
   }
 
   getActiveLegendColor(): string | null {
-    return whenConsistent(this.getActiveSectionKeys(), (key) =>
+    return whenConsistent(this.getActiveKeys(), (key) =>
       key.getLegendColor()
     );
   }
@@ -81,14 +81,14 @@ const handleSetActiveSection = (state: KeycapEditor, action: Action<SetActiveSec
 const handleSetActiveBackgroundColor =
   (state: KeycapEditor, action: Action<SetActiveBackgroundColor>) => (
     state.update('keyboard', (keyboard: Keyboard) =>
-      keyboard.setBackgroundColors(state.getActiveSectionKeys(), action.payload.backgroundColor)
+      keyboard.setBackgroundColors(state.getActiveKeys(), action.payload.backgroundColor)
     )
   );
 
 const handleSetActiveLegendColor =
   (state: KeycapEditor, action: Action<SetActiveLegendColor>) => (
     state.update('keyboard', (keyboard: Keyboard) =>
-      keyboard.setLegendColors(state.getActiveSectionKeys(), action.payload.legendColor)
+      keyboard.setLegendColors(state.getActiveKeys(), action.payload.legendColor)
     )
   )
 

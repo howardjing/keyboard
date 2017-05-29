@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { List } from 'immutable';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { getEditor } from '../../domains/keycap-editor/selectors';
@@ -7,7 +8,7 @@ import {
   setActiveBackgroundColor,
   setActiveLegendColor,
 } from '../../domains/keycap-editor/actions';
-import Keyboard from '../../domains/keycap-editor/keyboard';
+import Keyboard, { Keycap } from '../../domains/keycap-editor/keyboard';
 import {
   Section,
   isSection,
@@ -16,6 +17,7 @@ import Component from './component';
 
 interface PropTypes {
   keyboard: Keyboard,
+  activeKeys: List<Keycap>,
   section: Section,
   backgroundColor: string | null,
   legendColor: string | null,
@@ -28,6 +30,7 @@ const mapStateToProps = (state) => {
   const editor = getEditor(state);
   return {
     keyboard: editor.getKeyboard(),
+    activeKeys: editor.getActiveKeys(),
     section: editor.getActiveSection(),
     backgroundColor: editor.getActiveBackgroundColor(),
     legendColor: editor.getActiveLegendColor(),
@@ -57,6 +60,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 
 const Editor: React.SFC<PropTypes> = ({
   keyboard,
+  activeKeys,
   section,
   backgroundColor,
   legendColor,
@@ -67,6 +71,7 @@ const Editor: React.SFC<PropTypes> = ({
 
   <Component
     keyboard={keyboard}
+    activeKeys={activeKeys}
     section={section}
     backgroundColor={backgroundColor}
     legendColor={legendColor}
