@@ -1,16 +1,17 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { darken } from 'polished';
-import { Keycap as Cap } from '../../../domains/keycap-editor/keyboard';
-
-const KEYCAP_BASE = 50;
+import { Keycap as Cap } from '../../../../domains/keycap-editor/keyboard';
+import { KEYCAP_BASE } from './index';
 
 const Keycap: React.SFC<{
   keycap: Cap,
   isActive: boolean,
+  handleClick: (e: React.MouseEvent<any>) => any,
 }> = ({
   keycap,
   isActive,
+  handleClick,
 }) => {
   const width = keycap.getWidth();
   const backgroundColor = keycap.getBackgroundColor();
@@ -23,6 +24,7 @@ const Keycap: React.SFC<{
       width={width}
       backgroundColor={backgroundColor}
       isActive={isActive}
+      onClick={handleClick}
     >
       <Innercap
         backgroundColor={backgroundColor}
@@ -40,13 +42,18 @@ const _Outercap: React.SFC<{
   width: number
   backgroundColor: string,
   isActive: boolean,
+  onClick: (e: React.MouseEvent<HTMLDivElement>) => any,
 }> = ({
   className,
+  onClick,
   width,
   backgroundColor,
   children,
 }) => (
-  <div className={className}>
+  <div
+    className={className}
+    onClick={onClick}
+  >
     {children}
   </div>
 );
@@ -61,6 +68,8 @@ const Outercap = styled(_Outercap)`
   height: ${() => KEYCAP_BASE}px;
   margin: 1px 0;
   box-shadow: ${({ isActive }) => isActive ? '0 0 16px #bbddff' : 'none' };
+  cursor: pointer;
+  user-select: none;
 `;
 
 const _Innercap: React.SFC<{
@@ -95,6 +104,3 @@ const Innercap = styled(_Innercap)`
 `;
 
 export default Keycap;
-export {
-  KEYCAP_BASE,
-};

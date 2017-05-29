@@ -197,7 +197,7 @@ class Keyboard extends Record({
     return this.getIn(['keycaps', keyId]) || null;
   }
 
-  private getKeys(keyIds: List<List<number>>): List<List<Keycap>> {
+  getKeys(keyIds: List<List<number>>): List<List<Keycap>> {
     return <List<List<Keycap>>>keyIds.map(group => group.map(id =>
       this.getKey(id)
     ).filter(keycap =>
@@ -301,7 +301,7 @@ class Keyboard extends Record({
   private setKeycaps(keycaps: List<Keycap>, updater: (keycap: Keycap) => Keycap): this {
     return <this>this.withMutations(keyboard => {
       keycaps.forEach(keycap => {
-        const oldKeycap = this.getIn(['keycaps', keycap.getId()]);
+       const oldKeycap = this.getIn(['keycaps', keycap.getId()]);
         if (!oldKeycap) { return; }
 
         // not sure if updateIn can be used with withMutations
@@ -314,9 +314,9 @@ class Keyboard extends Record({
   }
 
   setBackgroundColors(keycaps: List<Keycap>, color: string): this {
-    return this.setKeycaps(keycaps, (keycap) =>
-      keycap.setBackgroundColor(color)
-    );
+    return this.setKeycaps(keycaps, (keycap) => {
+      return keycap.setBackgroundColor(color)
+    });
   }
 
   setLegendColors(keycaps: List<Keycap>, color: string): this {

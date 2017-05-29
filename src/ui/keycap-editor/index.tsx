@@ -30,6 +30,7 @@ const mapStateToProps = (state) => {
   const editor = getEditor(state);
   return {
     keyboard: editor.getKeyboard(),
+    activeSection: editor.getActiveSection(),
     activeKeys: editor.getActiveKeys(),
     section: editor.getActiveSection(),
     backgroundColor: editor.getActiveBackgroundColor(),

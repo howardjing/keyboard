@@ -33,10 +33,17 @@ const KeycapEditor: React.SFC<PropTypes> = ({
       <label>
         <Label>Section</Label>
         <select
+          value={section}
           onChange={handleSectionChange}
         >
           <option value="base">Base</option>
           <option value="modifiers">Modifiers</option>
+          <option
+            value="custom"
+            disabled
+          >
+            Custom
+          </option>
         </select>
       </label>
     </InputGroup>
@@ -45,7 +52,7 @@ const KeycapEditor: React.SFC<PropTypes> = ({
         <Label>Background color</Label>
         <input
           type="text"
-          value={backgroundColor}
+          value={backgroundColor || ''}
           onChange={handleBackgroundColorChange}
           placeholder="#fff"
         />
@@ -56,7 +63,7 @@ const KeycapEditor: React.SFC<PropTypes> = ({
         <Label>Legend color</Label>
         <input
           type="text"
-          value={legendColor}
+          value={legendColor || ''}
           placeholder="#000"
           onChange={handleLegendColorChange}
         />

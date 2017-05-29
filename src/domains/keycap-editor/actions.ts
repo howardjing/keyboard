@@ -7,6 +7,10 @@ import {
   Section
 } from './reducer';
 
+import {
+  Keycap
+} from './keyboard';
+
 const actionCreator = makeActionCreator('keycap-editor');
 
 const setActiveSection = actionCreator<SetActiveSection>('SET_ACTIVE_SECTION');
@@ -26,8 +30,22 @@ export interface SetActiveLegendColor {
   legendColor: string,
 }
 
+const setActiveKeycap =
+  actionCreator<SetActiveKeycap>('SET_ACTIVE_KEYCAP');
+export interface SetActiveKeycap {
+  keycap: Keycap,
+}
+
+const addActiveKeycap =
+  actionCreator<AddActiveKeycap>('ADD_ACTIVE_KEYCAP');
+export interface AddActiveKeycap {
+  keycap: Keycap,
+}
+
 export {
   setActiveSection,
   setActiveBackgroundColor,
   setActiveLegendColor,
+  setActiveKeycap,
+  addActiveKeycap,
 };
