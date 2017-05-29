@@ -238,7 +238,11 @@ class Keyboard extends Record({
   }
 
   getModifiers(): List<Keycap> {
-    const topRow = this.getContextual().flatMap(identity);
+    const contextual = this.getContextual();
+    const esc = contextual.get(0);
+    const f5ToF9 = contextual.get(2);
+    const print = contextual.get(4);
+
     const navigation = this.getNavigation().flatMap(identity);
     const arrows = this.getArrows().flatMap(identity);
 
@@ -254,7 +258,9 @@ class Keyboard extends Record({
     const leftMods = alphanumeric.get(4).take(3);
     const rightMods = alphanumeric.get(4).skip(4);
 
-    return <List<Keycap>>topRow
+    return <List<Keycap>>esc
+      .concat(f5ToF9)
+      .concat(print)
       .concat(navigation)
       .concat(arrows)
       .concat(List.of(
@@ -270,6 +276,10 @@ class Keyboard extends Record({
   }
 
   getBase(): List<Keycap> {
+    const contextual = this.getContextual();
+    const f1ToF4 = contextual.get(1);
+    const f9Tof12 = contextual.get(3);
+
     const alphanumeric = this.getAlphanumeric();
 
     const numbers = alphanumeric.get(0).skipLast(1);
@@ -280,6 +290,8 @@ class Keyboard extends Record({
     const space = alphanumeric.get(4).get(3);
 
     return <List<Keycap>>numbers
+      .concat(f1ToF4)
+      .concat(f9Tof12)
       .concat(qwerty)
       .concat(asdf)
       .concat(zxcv)

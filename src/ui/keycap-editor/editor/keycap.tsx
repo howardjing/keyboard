@@ -60,7 +60,7 @@ const Outercap = styled(_Outercap)`
   width: ${props => props.width * KEYCAP_BASE}px;
   height: ${() => KEYCAP_BASE}px;
   margin: 1px 0;
-  box-shadow: ${({ isActive }) => isActive ? '0 0 16px #a0c8f0' : 'none' };
+  box-shadow: ${({ isActive }) => isActive ? '0 0 16px #bbddff' : 'none' };
 `;
 
 const _Innercap: React.SFC<{
