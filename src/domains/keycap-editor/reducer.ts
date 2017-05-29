@@ -64,7 +64,7 @@ class KeycapEditor extends Record({
     return this.get('activeSection');
   }
 
-  private getActiveKeyIds(): Set<number> {
+  getActiveKeyIds(): Set<number> {
     return this.get('activeKeyIds');
   }
 
@@ -107,7 +107,6 @@ const handleSetActiveLegendColor =
     )
   );
 
-
 /**
  * WARNING: activeSection and activeKeys are tied together -- always update both!
  */
@@ -127,21 +126,42 @@ const handleSetActiveSection = (state: KeycapEditor, action: Action<SetActiveSec
 };
 
 /**
- * overrides existing list of activeKeys
+ * toggles the given keycap clearing out other active keycaps
  */
 const handleSetActiveKeycap =
-  (state: KeycapEditor, action: Action<SetActiveKeycap>) => (
-    state
-      .set('activeSection', 'custom')
-      .set('activeKeyIds', List.of(action.payload.keycap.getId()))
-  );
+  (state: KeycapEditor, action: Action<SetActiveKeycap>) => {
+    const activeKeyIds = state.getActiveKeyIds();
+    const keycapId = action.payload.keycap.getId();
 
+    const newActiveKeyIds = activeKeyIds.includes(keycapId) ?
+      Set() :
+      Set.of(keycapId);
+
+    return (
+      state
+        .set('activeSection', 'custom')
+        .set('activeKeyIds', newActiveKeyIds)
+    );
+  }
+
+/**
+ * toggles the given keycap leaving other active keycaps alone
+ */
 const handleAddActiveKeycap =
-  (state: Keycap, action: Action<AddActiveKeycap>) => (
-    state
-      .set('activeSection', 'custom')
-      .update('activeKeyIds', keys => keys.push(action.payload.keycap.getId()))
-  );
+  (state: KeycapEditor, action: Action<AddActiveKeycap>) => {
+    const activeKeyIds = state.getActiveKeyIds();
+    const keycapId = action.payload.keycap.getId();
+
+    const newActiveKeyIds = activeKeyIds.includes(keycapId) ?
+      activeKeyIds.delete(keycapId) :
+      activeKeyIds.add(keycapId);
+
+    return (
+      state
+        .set('activeSection', 'custom')
+        .set('activeKeyIds', newActiveKeyIds)
+    );
+  };
 
 const handleSetMouseDown =
   (state: KeycapEditor, action: Action<SetMouseDown>) => (
