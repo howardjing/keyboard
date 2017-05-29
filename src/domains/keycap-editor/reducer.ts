@@ -7,6 +7,7 @@ import {
   setActiveLegendColor, SetActiveLegendColor,
   setActiveKeycap, SetActiveKeycap,
   addActiveKeycap, AddActiveKeycap,
+  setMouseDown, SetMouseDown,
 } from './actions';
 import Keyboard, { Keycap } from './keyboard';
 
@@ -34,6 +35,7 @@ class KeycapEditor extends Record({
   keyboard: Keyboard.build(),
   activeSection: 'custom',
   activeKeyIds: Set(),
+  mouseDown: false,
 }) {
   static build(): KeycapEditor {
     const keyboard = Keyboard.build();
@@ -65,6 +67,7 @@ class KeycapEditor extends Record({
   private getActiveKeyIds(): Set<number> {
     return this.get('activeKeyIds');
   }
+
   getActiveKeys(): Set<Keycap> {
     return this
       .getKeyboard()
@@ -81,6 +84,10 @@ class KeycapEditor extends Record({
     return whenConsistent(this.getActiveKeys(), (key) =>
       key.getLegendColor()
     );
+  }
+
+  isMouseDown(): boolean {
+    return this.get('mouseDown');
   }
 }
 
@@ -136,12 +143,19 @@ const handleAddActiveKeycap =
       .update('activeKeyIds', keys => keys.push(action.payload.keycap.getId()))
   );
 
+const handleSetMouseDown =
+  (state: KeycapEditor, action: Action<SetMouseDown>) => (
+    state
+      .set('mouseDown', action.payload.mouseDown)
+  );
+
 export default createReducer(initialState, {
   [setActiveBackgroundColor.type]: handleSetActiveBackgroundColor,
   [setActiveLegendColor.type]: handleSetActiveLegendColor,
   [setActiveSection.type]: handleSetActiveSection,
   [setActiveKeycap.type]: handleSetActiveKeycap,
   [addActiveKeycap.type]: handleAddActiveKeycap,
+  [setMouseDown.type]: handleSetMouseDown,
 });
 
 export {

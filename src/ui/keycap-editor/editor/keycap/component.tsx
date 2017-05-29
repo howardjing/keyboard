@@ -7,11 +7,13 @@ import { KEYCAP_BASE } from './index';
 const Keycap: React.SFC<{
   keycap: Cap,
   isActive: boolean,
-  handleClick: (e: React.MouseEvent<any>) => any,
+  handleMouseDown: (e: React.MouseEvent<any>) => any,
+  handleMouseEnter: (e: React.MouseEvent<any>) => any,
 }> = ({
   keycap,
   isActive,
-  handleClick,
+  handleMouseDown,
+  handleMouseEnter,
 }) => {
   const width = keycap.getWidth();
   const backgroundColor = keycap.getBackgroundColor();
@@ -24,7 +26,8 @@ const Keycap: React.SFC<{
       width={width}
       backgroundColor={backgroundColor}
       isActive={isActive}
-      onClick={handleClick}
+      onMouseDown={handleMouseDown}
+      onMouseEnter={handleMouseEnter}
     >
       <Innercap
         backgroundColor={backgroundColor}
@@ -42,17 +45,20 @@ const _Outercap: React.SFC<{
   width: number
   backgroundColor: string,
   isActive: boolean,
-  onClick: (e: React.MouseEvent<HTMLDivElement>) => any,
+  onMouseDown: (e: React.MouseEvent<HTMLDivElement>) => any,
+  onMouseEnter: (e: React.MouseEvent<HTMLDivElement>) => any,
 }> = ({
   className,
-  onClick,
+  onMouseDown,
+  onMouseEnter,
   width,
   backgroundColor,
   children,
 }) => (
   <div
     className={className}
-    onClick={onClick}
+    onMouseDown={onMouseDown}
+    onMouseEnter={onMouseEnter}
   >
     {children}
   </div>
