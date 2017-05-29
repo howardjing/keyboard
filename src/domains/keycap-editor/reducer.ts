@@ -129,16 +129,12 @@ const handleSetActiveSection = (state: KeycapEditor, action: Action<SetActiveSec
 };
 
 /**
- * toggles the given keycap clearing out other active keycaps
+ * adds the given keycap clearing out other active keycaps
  */
 const handleSetActiveKeycap =
   (state: KeycapEditor, action: Action<SetActiveKeycap>) => {
-    const activeKeyIds = state.getActiveKeyIds();
     const keycapId = action.payload.keycap.getId();
-
-    const newActiveKeyIds = activeKeyIds.includes(keycapId) ?
-      Set() :
-      Set.of(keycapId);
+    const newActiveKeyIds = Set.of(keycapId);
 
     return (
       state
