@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { List } from 'immutable';
+import { List, Set } from 'immutable';
 import styled from 'styled-components';
 import Editor from './editor';
 import Keyboard, { Keycap } from '../../domains/keycap-editor/keyboard';
@@ -9,7 +9,7 @@ import {
 
 interface PropTypes {
   keyboard: Keyboard,
-  activeKeys: List<Keycap>
+  activeKeys: Set<Keycap>
   section: Section,
   backgroundColor: string | null,
   legendColor: string | null,

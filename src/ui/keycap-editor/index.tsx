@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { List } from 'immutable';
+import { List, Set } from 'immutable';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { getEditor } from '../../domains/keycap-editor/selectors';
@@ -17,7 +17,7 @@ import Component from './component';
 
 interface PropTypes {
   keyboard: Keyboard,
-  activeKeys: List<Keycap>,
+  activeKeys: Set<Keycap>,
   section: Section,
   backgroundColor: string | null,
   legendColor: string | null,
@@ -30,7 +30,6 @@ const mapStateToProps = (state) => {
   const editor = getEditor(state);
   return {
     keyboard: editor.getKeyboard(),
-    activeSection: editor.getActiveSection(),
     activeKeys: editor.getActiveKeys(),
     section: editor.getActiveSection(),
     backgroundColor: editor.getActiveBackgroundColor(),

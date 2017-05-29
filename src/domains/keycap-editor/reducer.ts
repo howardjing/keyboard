@@ -1,4 +1,4 @@
-import { Record, List } from 'immutable';
+import { Record, List, Collection, Set} from 'immutable';
 import { createReducer } from 'redux-immutablejs';
 import { Action } from '../../domains/actions';
 import {
@@ -11,7 +11,7 @@ import {
 import Keyboard, { Keycap } from './keyboard';
 
 const whenConsistent = <T, K>(
-  list: List<T>,
+  list: Collection<T, T>,
   getter: (t: T) => K,
 ): K | null => {
   const first = list.first();
@@ -33,7 +33,7 @@ const isSection = (x: any): x is Section => {
 class KeycapEditor extends Record({
   keyboard: Keyboard.build(),
   activeSection: 'custom',
-  activeKeyIds: List(),
+  activeKeyIds: Set(),
 }) {
   static build(): KeycapEditor {
     const keyboard = Keyboard.build();
@@ -62,14 +62,13 @@ class KeycapEditor extends Record({
     return this.get('activeSection');
   }
 
-  private getActiveKeyIds(): List<number> {
+  private getActiveKeyIds(): Set<number> {
     return this.get('activeKeyIds');
   }
-  getActiveKeys(): List<Keycap> {
+  getActiveKeys(): Set<Keycap> {
     return this
       .getKeyboard()
-      .getKeys(List.of(this.getActiveKeyIds()))
-      .flatMap(id => id) as List<Keycap>;
+      .getKeys(this.getActiveKeyIds()) as any;
   }
 
   getActiveBackgroundColor(): string | null {

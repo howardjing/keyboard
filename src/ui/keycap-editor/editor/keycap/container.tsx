@@ -17,7 +17,7 @@ const mapDispatchToProps = (dispatch, { keycap }) => bindActionCreators({
      } else {
        return setActiveKeycap({ keycap });
      }
-   }
+   },
 }, dispatch);
 
 const Container: React.SFC<{

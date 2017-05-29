@@ -7,10 +7,10 @@ import Keycap, { KEYCAP_BASE } from './keycap';
 
 const Editor: React.SFC<{
   keyboard: Keyboard,
-  activeKeys: List<Cap>
+  activeKeys: Set<Cap>
 }> = ({
   keyboard,
-  activeKeys: _activeKeys,
+  activeKeys,
 }) => {
   const contextual = keyboard.getContextual();
   const escape = contextual.get(0);
@@ -26,8 +26,6 @@ const Editor: React.SFC<{
   const arrows = keyboard.getArrows();
   const up = arrows.get(0);
   const left = arrows.get(1);
-
-  const activeKeys = _activeKeys.toSet();
 
   return (
     <Frame>

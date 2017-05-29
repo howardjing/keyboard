@@ -1,4 +1,4 @@
-import { Record, List, Map } from 'immutable';
+import { Record, List, Map, Collection, Set } from 'immutable';
 
 // mechanism for generating id
 let _id = 0;
@@ -197,12 +197,14 @@ class Keyboard extends Record({
     return this.getIn(['keycaps', keyId]) || null;
   }
 
-  getKeys(keyIds: List<List<number>>): List<List<Keycap>> {
-    return <List<List<Keycap>>>keyIds.map(group => group.map(id =>
-      this.getKey(id)
-    ).filter(keycap =>
-      keycap !== null)
-    );
+  getKeys(keyIds: Collection<number, number>): Collection<number, Keycap> {
+    return keyIds
+      .map(id => this.getKey(id))
+      .filter(keycap => keycap !== null) as Collection<number, Keycap>;
+  }
+
+  private getNestedKeys(nestedKeyIds: List<List<number>>): List<List<Keycap>> {
+    return nestedKeyIds.map(keyIds => this.getKeys(keyIds)) as List<List<Keycap>>;
   }
 
   /**
@@ -210,7 +212,7 @@ class Keyboard extends Record({
    */
   getContextual(): List<List<Keycap>> {
     const contextual: List<List<number>> = this.get('contextual');
-    return this.getKeys(contextual);
+    return this.getNestedKeys(contextual);
   }
 
   /**
@@ -218,7 +220,7 @@ class Keyboard extends Record({
    */
   getAlphanumeric(): List<List<Keycap>> {
     const alphanumeric: List<List<number>> = this.get('alphanumeric');
-    return this.getKeys(alphanumeric);
+    return this.getNestedKeys(alphanumeric);
   }
 
   /**
@@ -226,7 +228,7 @@ class Keyboard extends Record({
    */
   getNavigation(): List<List<Keycap>> {
     const navigation: List<List<number>> = this.get('navigation');
-    return this.getKeys(navigation);
+    return this.getNestedKeys(navigation);
   }
 
   /**
@@ -234,7 +236,7 @@ class Keyboard extends Record({
    */
   getArrows(): List<List<Keycap>> {
     const arrows: List<List<number>> = this.get('arrows');
-    return this.getKeys(arrows);
+    return this.getNestedKeys(arrows);
   }
 
   getModifiers(): List<Keycap> {
@@ -298,7 +300,7 @@ class Keyboard extends Record({
       .concat(List.of(space));
   }
 
-  private setKeycaps(keycaps: List<Keycap>, updater: (keycap: Keycap) => Keycap): this {
+  private setKeycaps(keycaps: Set<Keycap>, updater: (keycap: Keycap) => Keycap): this {
     return <this>this.withMutations(keyboard => {
       keycaps.forEach(keycap => {
        const oldKeycap = this.getIn(['keycaps', keycap.getId()]);
@@ -313,13 +315,13 @@ class Keyboard extends Record({
     })
   }
 
-  setBackgroundColors(keycaps: List<Keycap>, color: string): this {
+  setBackgroundColors(keycaps: Set<Keycap>, color: string): this {
     return this.setKeycaps(keycaps, (keycap) => {
       return keycap.setBackgroundColor(color)
     });
   }
 
-  setLegendColors(keycaps: List<Keycap>, color: string): this {
+  setLegendColors(keycaps: Set<Keycap>, color: string): this {
     return this.setKeycaps(keycaps, (keycap) =>
       keycap.setLegendColor(color)
     );
