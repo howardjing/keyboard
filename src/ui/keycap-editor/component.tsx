@@ -6,7 +6,7 @@ import Keyboard, { Keycap } from '../../domains/keycap-editor/keyboard';
 import {
   Section,
 } from '../../domains/keycap-editor/reducer';
-import Board from './board';
+import KeyboardComponent from './keyboard';
 
 interface PropTypes {
   keyboard: Keyboard,
@@ -74,7 +74,9 @@ const KeycapEditor: React.SFC<PropTypes> = ({
       keyboard={keyboard}
       activeKeys={activeKeys}
     />
-    <Board />
+    <KeyboardComponent
+      keyboard={keyboard}
+    />
   </div>
 );
 
