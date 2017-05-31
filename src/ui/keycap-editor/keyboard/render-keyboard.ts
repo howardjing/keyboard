@@ -8,7 +8,7 @@ import {
   Vector3,
   Object3D,
 } from 'three';
-import Keyboard from '../../../domains/keycap-editor/keyboard';
+import Keyboard, { Keycap } from '../../../domains/keycap-editor/keyboard';
 
 import OrbitControls from './orbit-controls';
 
@@ -34,6 +34,7 @@ const renderKeyboard = (el: HTMLCanvasElement, keyboard: Keyboard) => {
   const controls = new OrbitControls(camera, renderer.domElement);
 
   const render = () => {
+    console.log("RENDERRRRR")
     requestAnimationFrame(render);
     controls.update();
     renderer.render(scene, camera);
@@ -52,6 +53,7 @@ const buildAlphanumerics = (keyboard: Keyboard) => {
   let offsetY = 0;
 
   const keysContainer = new Object3D();
+
   const meshes = alphanumeric.flatMap(group => {
     const keysWidth = group.reduce((sum, key) => sum + key.getWidth(), 0);
     const targetWidth = keysWidth + 2;
@@ -61,15 +63,13 @@ const buildAlphanumerics = (keyboard: Keyboard) => {
 
     let offsetX = 0;
     const row = group.map((key, i) => {
-      const geometry = new BoxGeometry(key.getWidth(), 1, 1);
-      const material = new MeshBasicMaterial({ color: 0xeeeeee, wireframe: true });
-      const mesh = new Mesh(geometry, material);
+      const keycap = buildKeycap(key);
+      const keyWidth = key.getWidth();
+      keycap.position.y = offsetY;
+      keycap.position.x = offsetX + keyWidth / 2;
+      offsetX += keyWidth + marginalPaddingX;
 
-      mesh.position.y = offsetY;
-      mesh.position.x = offsetX + key.getWidth() / 2;
-      offsetX += key.getWidth() + marginalPaddingX;
-
-      return mesh;
+      return keycap;
     });
 
     offsetY -= 1 + marginalPaddingY;
@@ -82,5 +82,12 @@ const buildAlphanumerics = (keyboard: Keyboard) => {
 
   return keysContainer;
 }
+
+const buildKeycap = (keycap: Keycap) => {
+  const width = keycap.getWidth();
+  const geometry = new BoxGeometry(width, 1, 1);
+  const material = new MeshBasicMaterial({ color: keycap.getBackgroundColor(), wireframe: true });
+  return new Mesh(geometry, material);
+};
 
 export default renderKeyboard;
