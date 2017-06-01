@@ -1,25 +1,32 @@
 import * as React from 'react';
-import renderKeyboard from './render-keyboard';
+import renderKeyboard, { KeyboardRender } from './render-keyboard';
 import KeyboardModel from '../../../domains/keycap-editor/keyboard';
 
 class Keyboard extends React.Component<{
   keyboard: KeyboardModel,
 }, {
   canvas: HTMLCanvasElement,
+  keyboardRender: KeyboardRender,
 }> {
 
   handleCanvas = (el: HTMLCanvasElement) => {
-    this.setState(() => ({ canvas: el }));
-
     const { keyboard } = this.props;
-    renderKeyboard(el, keyboard);
+    const keyboardRender = renderKeyboard(el, keyboard);
+
+    this.setState(() => ({
+      canvas: el,
+      keyboardRender,
+    }))
   };
 
-  componentWillReceiveProps({ keyboard: newKeyboard }) {
-    const { keyboard } = this.props;
-    if (keyboard !== newKeyboard) {
-      // TODO: add cleanup logic, pretty sure this causes a memory leak
+  componentWillReceiveProps({ keyboard }) {
+    const { keyboard: oldKeyboard } = this.props;
+    if (keyboard !== oldKeyboard) {
       renderKeyboard(this.state.canvas, keyboard);
+
+      // clean up
+      const { keyboardRender } = this.state;
+      keyboardRender.destroy();
     }
   }
 

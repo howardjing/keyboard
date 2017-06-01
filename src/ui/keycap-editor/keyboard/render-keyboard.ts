@@ -12,35 +12,49 @@ import Keyboard, { Keycap } from '../../../domains/keycap-editor/keyboard';
 
 import OrbitControls from './orbit-controls';
 
-const renderKeyboard = (el: HTMLCanvasElement, keyboard: Keyboard) => {
-  const scene = new Scene();
-  const camera = new PerspectiveCamera(75, 2, 0.1, 1000);
-  camera.position.z = 10;
+export class KeyboardRender {
+  shouldAnimate: boolean;
 
-  const geometry = new BoxGeometry(1, 1, 1);
-  const material = new MeshBasicMaterial({ color: 0xff0000, wireframe: true });
+  constructor(el: HTMLCanvasElement, keyboard: Keyboard) {
+    this.shouldAnimate = true;
 
-  const alphanumerics = buildAlphanumerics(keyboard);
+    const scene = new Scene();
+    const camera = new PerspectiveCamera(75, 2, 0.1, 1000);
+    camera.position.z = 10;
 
-  // hardcoded to be keyboard midpoint
-  alphanumerics.position.x = -17 / 2;
-  alphanumerics.position.y = 4 / 2;
+    const geometry = new BoxGeometry(1, 1, 1);
+    const material = new MeshBasicMaterial({ color: 0xff0000, wireframe: true });
 
-  scene.add(alphanumerics);
+    const alphanumerics = buildAlphanumerics(keyboard);
 
-  const renderer = new WebGLRenderer({ canvas: el });
-  renderer.setSize(1000, 500);
+    // hardcoded to be keyboard midpoint
+    alphanumerics.position.x = -17 / 2;
+    alphanumerics.position.y = 4 / 2;
 
-  const controls = new OrbitControls(camera, renderer.domElement);
+    scene.add(alphanumerics);
 
-  const render = () => {
-    console.log("RENDERRRRR")
-    requestAnimationFrame(render);
-    controls.update();
-    renderer.render(scene, camera);
+    const renderer = new WebGLRenderer({ canvas: el });
+    renderer.setSize(1000, 500);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+
+    const animate = () => {
+      if (!this.shouldAnimate) { return; }
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    }
+
+    animate();
   }
 
-  render();
+  destroy() {
+    this.shouldAnimate = false;
+  }
+}
+
+const renderKeyboard = (el: HTMLCanvasElement, keyboard: Keyboard): KeyboardRender => {
+  return new KeyboardRender(el, keyboard);
 };
 
 const buildAlphanumerics = (keyboard: Keyboard) => {
