@@ -40,14 +40,24 @@ class KeyboardRender {
     const render = new Object3D();
     const contextual = buildContextualRow(keyboard);
     const alphanumerics = buildAlphanumerics(keyboard);
+    const navigation = buildNavigation(keyboard);
+    const arrows = buildArrows(keyboard);
+
     // hardcoded
     contextual.position.x = -17 / 2;
     contextual.position.y = 3.5;
     alphanumerics.position.x = -17 / 2;
     alphanumerics.position.y = 2;
-
+    navigation.position.x = 9;
+    navigation.position.y = 2;
+    arrows.position.x = 9;
+    arrows.position.y = -2.5;
     render.add(alphanumerics);
     render.add(contextual);
+    render.add(navigation);
+    render.add(arrows);
+
+    console.log("HEY", navigation)
 
     // clear scene
     const { scene } = this;
@@ -112,24 +122,45 @@ const buildContextualRow = (keyboard: Keyboard) => {
   return contextualRow;
 }
 
-const buildAlphanumerics = (keyboard: Keyboard) => {
-  const alphanumeric = keyboard.getAlphanumeric();
+const buildArrows = (keyboard: Keyboard) => {
+  const arrows = keyboard.getArrows();
+  const up = arrows.get(0);
+  const left = arrows.get(1);
 
-  const baseHeight = alphanumeric.size;
-  const targetHeight = baseHeight + 0.5;
+  const upRow = buildRow(up, 1);
+  upRow.position.x = 1.15;
+  const leftRow = buildRow(left, 3.25);
+  upRow.position.y = 1.15;
+
+  const arrowRow = new Object3D();
+  arrowRow.add(upRow);
+  arrowRow.add(leftRow);
+
+  return arrowRow;
+}
+
+const buildNavigation = (keyboard: Keyboard) => (
+  buildSection(keyboard.getNavigation(), 3.25, 2.25)
+);
+
+const buildAlphanumerics = (keyboard: Keyboard) => (
+  buildSection(keyboard.getAlphanumeric(), 17, 5.5)
+);
+
+const buildSection = (section: List<List<Keycap>>, targetWidth: number, targetHeight: number) => {
+  const baseHeight = section.size;
   const totalPaddingY = targetHeight - baseHeight;
-  const marginalPaddingY = totalPaddingY / (alphanumeric.size - 1);
+  const marginalPaddingY = totalPaddingY / (section.size - 1);
   let offsetY = 0;
 
-  const keysContainer = new Object3D();
-
-  const rows = alphanumeric.map(group => {
-    const row = buildRow(group, 17);
+  const rows = section.map(group => {
+    const row = buildRow(group, targetWidth);
     row.position.y = offsetY;
     offsetY -= 1 + marginalPaddingY;
     return row;
   }) as List<Object3D>;
 
+  const keysContainer = new Object3D();
   rows.forEach(mesh => {
     keysContainer.add(mesh);
   });

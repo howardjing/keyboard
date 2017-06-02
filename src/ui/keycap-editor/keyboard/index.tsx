@@ -10,6 +10,7 @@ class Keyboard extends React.Component<{
 
   handleCanvas = (el: HTMLCanvasElement) => {
     const { keyboard } = this.props;
+    console.log("HEY", KeyboardRender)
     const keyboardRender = KeyboardRender.build(el)
       .setKeyboard(keyboard)
       .render();
