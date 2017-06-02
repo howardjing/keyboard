@@ -1,20 +1,20 @@
 import * as React from 'react';
-import renderKeyboard, { KeyboardRender } from './render-keyboard';
+import KeyboardRender from './keyboard-render';
 import KeyboardModel from '../../../domains/keycap-editor/keyboard';
 
 class Keyboard extends React.Component<{
   keyboard: KeyboardModel,
 }, {
-  canvas: HTMLCanvasElement,
   keyboardRender: KeyboardRender,
 }> {
 
   handleCanvas = (el: HTMLCanvasElement) => {
     const { keyboard } = this.props;
-    const keyboardRender = renderKeyboard(el, keyboard);
+    const keyboardRender = KeyboardRender.build(el)
+      .setKeyboard(keyboard)
+      .render();
 
     this.setState(() => ({
-      canvas: el,
       keyboardRender,
     }))
   };
@@ -22,11 +22,8 @@ class Keyboard extends React.Component<{
   componentWillReceiveProps({ keyboard }) {
     const { keyboard: oldKeyboard } = this.props;
     if (keyboard !== oldKeyboard) {
-      renderKeyboard(this.state.canvas, keyboard);
-
-      // clean up
       const { keyboardRender } = this.state;
-      keyboardRender.destroy();
+      keyboardRender.setKeyboard(keyboard);
     }
   }
 
