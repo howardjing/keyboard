@@ -2,11 +2,13 @@ import {
   Scene,
   PerspectiveCamera,
   BoxGeometry,
-  MeshBasicMaterial,
+  MeshPhongMaterial,
+  MeshLambertMaterial,
   Mesh,
   WebGLRenderer,
   Vector3,
   Object3D,
+  PointLight,
 } from 'three';
 import { List } from 'immutable';
 import Keyboard, { Keycap } from '../../../domains/keycap-editor/keyboard';
@@ -25,12 +27,14 @@ class KeyboardRender {
 
   constructor(el: HTMLCanvasElement) {
     this.renderer = new WebGLRenderer({ canvas: el });
-    this.renderer.setSize(1000, 500); // TODO: hardcoded
-
+    const width = 800;
+    const height = 450;
+    this.renderer.setSize(width, height); // TODO: hardcoded
     this.scene = new Scene();
 
-    const camera = new PerspectiveCamera(75, 2, 0.1, 1000);
-    camera.position.z = 10;
+    const camera = new PerspectiveCamera(75, width / height, 0.1, 1000);
+    camera.position.y = -5
+    camera.position.z = 12;
     this.controls = new OrbitControls(camera, this.renderer.domElement);
   }
 
@@ -38,10 +42,12 @@ class KeyboardRender {
     this.keyboard = keyboard;
 
     const render = new Object3D();
+    const keys = new Object3D();
     const contextual = buildContextualRow(keyboard);
     const alphanumerics = buildAlphanumerics(keyboard);
     const navigation = buildNavigation(keyboard);
     const arrows = buildArrows(keyboard);
+    const casing = buildCase(23.25, 8.25, 1);
 
     // hardcoded
     contextual.position.x = -17 / 2;
@@ -51,19 +57,37 @@ class KeyboardRender {
     navigation.position.x = 9;
     navigation.position.y = 2;
     arrows.position.x = 9;
-    arrows.position.y = -2.5;
-    render.add(alphanumerics);
-    render.add(contextual);
-    render.add(navigation);
-    render.add(arrows);
+    arrows.position.y = -2.5
 
-    console.log("HEY", navigation)
+    casing.position.x = 2;
+    casing.position.y = 0.5;
+    keys.position.z = 0.7;
+
+    keys.add(alphanumerics)
+    keys.add(contextual);
+    keys.add(navigation);
+    keys.add(arrows);
+
+    render.position.x = -2.5; // TODO: don't hardcode
+    render.add(keys);
+    render.add(casing);
 
     // clear scene
     const { scene } = this;
     while (scene.children.length > 0) {
       scene.remove(scene.children[0]);
     }
+
+    // add lighting
+
+    const light = new PointLight();
+    light.position.set(50, 50, 50);
+
+    const anotherLight = new PointLight();
+    anotherLight.position.set(-50, -50, 50);
+
+    scene.add(light);
+    scene.add(anotherLight);
 
     // add new keyboard
     this.scene.add(render);
@@ -96,7 +120,7 @@ const buildContextualRow = (keyboard: Keyboard) => {
   const f1 = buildRow(contextual.get(1), 4.333);
   const f5 = buildRow(contextual.get(2), 4.333);
   const f9 = buildRow(contextual.get(3), 4.333);
-  const print = buildRow(contextual.get(4), 3);
+  const print = buildRow(contextual.get(4), 3.25);
 
   let offsetX = 0;
   const contextualRow = new Object3D();
@@ -120,6 +144,13 @@ const buildContextualRow = (keyboard: Keyboard) => {
   contextualRow.add(print);
 
   return contextualRow;
+}
+
+const buildCase = (width: number, height: number, depth: number) => {
+  const geometry = new BoxGeometry(width, height, depth);
+  const material = new MeshPhongMaterial({ color: 0x1a1a1a });
+  const mesh = new Mesh(geometry, material);
+  return mesh;
 }
 
 const buildArrows = (keyboard: Keyboard) => {
@@ -198,11 +229,13 @@ const buildRow = (
   return row;
 };
 
+const SCALAR = 1 / 0.725;
 const buildKeycap = (keycap: Keycap) => {
   const width = keycap.getWidth();
-  const geometry = new BoxGeometry(width, 1, 1);
-  const material = new MeshBasicMaterial({ color: keycap.getBackgroundColor(), wireframe: true });
-  return new Mesh(geometry, material);
+  const geometry = new BoxGeometry(SCALAR * width * 0.725, SCALAR * 0.725, SCALAR * 0.291);
+  const material = new MeshLambertMaterial({ color: keycap.getBackgroundColor() });
+  const mesh = new Mesh(geometry, material);
+  return mesh;
 };
 
 export default KeyboardRender;

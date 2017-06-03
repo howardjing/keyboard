@@ -84,7 +84,7 @@ const RIGHT_SHIFT = () => Keycap.build('Shift', '', 2.75);
 const LEFT_CONTROL = () => Keycap.build('Ctrl', '', 1.25);
 const LEFT_SUPER = () => Keycap.build('Super', '', 1.25);
 const LEFT_ALT = () => Keycap.build('Alt', '', 1.25);
-const SPACEBAR = () => Keycap.build('', '', 6.25);
+const SPACEBAR = () => Keycap.build('', '', 6.25, undefined, undefined, true);
 const RIGHT_ALT = () => Keycap.build('Alt', '', 1.25);
 const RIGHT_SUPER = () => Keycap.build('Super', '', 1.25);
 const MENU = () => Keycap.build('Menu', '', 1.25);
@@ -335,6 +335,7 @@ class Keycap extends Record({
   width: 1,
   backgroundColor: "#787667",
   legendColor: "#000",
+  convex: false,
 }) {
   static build(
     primaryLabel: string = '',
@@ -342,6 +343,7 @@ class Keycap extends Record({
     width: number = 1,
     backgroundColor: string | undefined = undefined,
     legendColor: string | undefined = undefined,
+    convex: boolean = false,
   ): Keycap {
     const params = {
       id: id(),
@@ -350,6 +352,7 @@ class Keycap extends Record({
       width,
       backgroundColor,
       legendColor,
+      convex,
     }
 
     Object.keys(params).forEach((key) => {
@@ -383,6 +386,10 @@ class Keycap extends Record({
 
   getLegendColor(): string {
     return this.get('legendColor');
+  }
+
+  isConvex(): boolean {
+    return this.get('convex');
   }
 
   setBackgroundColor(color: string): this {
