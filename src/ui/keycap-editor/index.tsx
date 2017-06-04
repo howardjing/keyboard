@@ -7,6 +7,7 @@ import {
   setActiveSection,
   setActiveBackgroundColor,
   setActiveLegendColor,
+  showRenderModal,
 } from '../../domains/keycap-editor/actions';
 import Keyboard, { Keycap } from '../../domains/keycap-editor/keyboard';
 import {
@@ -24,6 +25,7 @@ interface PropTypes {
   handleSectionChange: (e: React.FormEvent<HTMLSelectElement>) => any,
   handleBackgroundColorChange: (e: React.FormEvent<HTMLInputElement>) => any,
   handleLegendColorChange: (e: React.FormEvent<HTMLInputElement>) => any,
+  handleRenderClick: () => any,
 }
 
 const mapStateToProps = (state) => {
@@ -56,6 +58,10 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   handleLegendColorChange: (e) => setActiveLegendColor({
     legendColor: e.target.value,
   }),
+
+  handleRenderClick: () => showRenderModal({
+    show: true,
+  }),
 }, dispatch);
 
 const Editor: React.SFC<PropTypes> = ({
@@ -67,8 +73,8 @@ const Editor: React.SFC<PropTypes> = ({
   handleSectionChange,
   handleBackgroundColorChange,
   handleLegendColorChange,
+  handleRenderClick,
 }) => (
-
   <Component
     keyboard={keyboard}
     activeKeys={activeKeys}
@@ -78,6 +84,7 @@ const Editor: React.SFC<PropTypes> = ({
     handleSectionChange={handleSectionChange}
     handleBackgroundColorChange={handleBackgroundColorChange}
     handleLegendColorChange={handleLegendColorChange}
+    handleRenderClick={handleRenderClick}
   />
 );
 

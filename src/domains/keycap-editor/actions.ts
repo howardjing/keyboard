@@ -48,6 +48,12 @@ export interface SetMouseDown {
   mouseDown: boolean,
 };
 
+const showRenderModal =
+  actionCreator<ShowRenderModal>('SHOW_RENDER_MODAL');
+export interface ShowRenderModal {
+  show: boolean,
+};
+
 export {
   setActiveSection,
   setActiveBackgroundColor,
@@ -55,4 +61,5 @@ export {
   setActiveKeycap,
   addActiveKeycap,
   setMouseDown,
+  showRenderModal,
 };

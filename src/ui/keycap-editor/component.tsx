@@ -7,6 +7,7 @@ import {
   Section,
 } from '../../domains/keycap-editor/reducer';
 import KeyboardComponent from './keyboard';
+import RenderModal from './render-modal';
 
 interface PropTypes {
   keyboard: Keyboard,
@@ -17,6 +18,7 @@ interface PropTypes {
   handleSectionChange: (e: React.FormEvent<HTMLSelectElement>) => any,
   handleBackgroundColorChange: (e: React.FormEvent<HTMLInputElement>) => any,
   handleLegendColorChange: (e: React.FormEvent<HTMLInputElement>) => any,
+  handleRenderClick: () => any,
 }
 
 const KeycapEditor: React.SFC<PropTypes> = ({
@@ -28,6 +30,7 @@ const KeycapEditor: React.SFC<PropTypes> = ({
   handleSectionChange,
   handleBackgroundColorChange,
   handleLegendColorChange,
+  handleRenderClick,
 }) => (
   <div>
     <InputGroup>
@@ -70,11 +73,19 @@ const KeycapEditor: React.SFC<PropTypes> = ({
         />
       </label>
     </InputGroup>
+    <button
+      onClick={handleRenderClick}
+    >
+      Render
+    </button>
     <Editor
       keyboard={keyboard}
       activeKeys={activeKeys}
     />
     <KeyboardComponent
+      keyboard={keyboard}
+    />
+    <RenderModal
       keyboard={keyboard}
     />
   </div>

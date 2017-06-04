@@ -1,117 +1,69 @@
 import {
   Scene,
-  PerspectiveCamera,
   BoxGeometry,
   MeshPhongMaterial,
   MeshLambertMaterial,
   Mesh,
-  WebGLRenderer,
   Vector3,
   Object3D,
   PointLight,
 } from 'three';
 import { List } from 'immutable';
 import Keyboard, { Keycap } from '../../../domains/keycap-editor/keyboard';
-import OrbitControls from './orbit-controls';
 
-class KeyboardRender {
-  keyboard: Keyboard;
+const buildScene = (keyboard: Keyboard): Scene => {
+  const scene = new Scene();
+  const render = new Object3D();
+  const keys = new Object3D();
+  const contextual = buildContextualRow(keyboard);
+  const alphanumerics = buildAlphanumerics(keyboard);
+  const navigation = buildNavigation(keyboard);
+  const arrows = buildArrows(keyboard);
+  const casing = buildCase(23.25, 8.25, 1);
 
-  scene: Scene;
-  controls: any;
-  renderer: WebGLRenderer;
+  // hardcoded
+  contextual.position.x = -17 / 2;
+  contextual.position.y = 3.5;
+  alphanumerics.position.x = -17 / 2;
+  alphanumerics.position.y = 2;
+  navigation.position.x = 9;
+  navigation.position.y = 2;
+  arrows.position.x = 9;
+  arrows.position.y = -2.5
 
-  static build(el: HTMLCanvasElement): KeyboardRender {
-    return new this(el);
+  casing.position.x = 2;
+  casing.position.y = 0.5;
+  keys.position.z = 0.7;
+
+  keys.add(alphanumerics)
+  keys.add(contextual);
+  keys.add(navigation);
+  keys.add(arrows);
+
+  render.position.x = -2.5; // TODO: don't hardcode
+  render.add(keys);
+  render.add(casing);
+
+  // clear scene
+  while (scene.children.length > 0) {
+    scene.remove(scene.children[0]);
   }
 
-  constructor(el: HTMLCanvasElement) {
-    this.renderer = new WebGLRenderer({ canvas: el });
-    const width = 800;
-    const height = 450;
-    this.renderer.setSize(width, height); // TODO: hardcoded
-    this.scene = new Scene();
+  // add lighting
 
-    const camera = new PerspectiveCamera(75, width / height, 0.1, 1000);
-    camera.position.y = -5
-    camera.position.z = 12;
-    this.controls = new OrbitControls(camera, this.renderer.domElement);
-  }
+  const light = new PointLight();
+  light.position.set(50, 50, 50);
 
-  setKeyboard(keyboard: Keyboard): this {
-    this.keyboard = keyboard;
+  const anotherLight = new PointLight();
+  anotherLight.position.set(-50, -50, 50);
 
-    const render = new Object3D();
-    const keys = new Object3D();
-    const contextual = buildContextualRow(keyboard);
-    const alphanumerics = buildAlphanumerics(keyboard);
-    const navigation = buildNavigation(keyboard);
-    const arrows = buildArrows(keyboard);
-    const casing = buildCase(23.25, 8.25, 1);
+  scene.add(light);
+  scene.add(anotherLight);
 
-    // hardcoded
-    contextual.position.x = -17 / 2;
-    contextual.position.y = 3.5;
-    alphanumerics.position.x = -17 / 2;
-    alphanumerics.position.y = 2;
-    navigation.position.x = 9;
-    navigation.position.y = 2;
-    arrows.position.x = 9;
-    arrows.position.y = -2.5
+  // add new keyboard
+  scene.add(render);
 
-    casing.position.x = 2;
-    casing.position.y = 0.5;
-    keys.position.z = 0.7;
-
-    keys.add(alphanumerics)
-    keys.add(contextual);
-    keys.add(navigation);
-    keys.add(arrows);
-
-    render.position.x = -2.5; // TODO: don't hardcode
-    render.add(keys);
-    render.add(casing);
-
-    // clear scene
-    const { scene } = this;
-    while (scene.children.length > 0) {
-      scene.remove(scene.children[0]);
-    }
-
-    // add lighting
-
-    const light = new PointLight();
-    light.position.set(50, 50, 50);
-
-    const anotherLight = new PointLight();
-    anotherLight.position.set(-50, -50, 50);
-
-    scene.add(light);
-    scene.add(anotherLight);
-
-    // add new keyboard
-    this.scene.add(render);
-
-    return this;
-  }
-
-  render(): this {
-    this.animate();
-    return this;
-  }
-
-  animate = () => {
-    requestAnimationFrame(this.animate);
-    const {
-      controls,
-      scene,
-      renderer,
-    } = this;
-
-    const camera: PerspectiveCamera = controls.object;
-    controls.update();
-    renderer.render(scene, camera);
-  }
+  return scene;
 }
 
 const buildContextualRow = (keyboard: Keyboard) => {
@@ -238,4 +190,4 @@ const buildKeycap = (keycap: Keycap) => {
   return mesh;
 };
 
-export default KeyboardRender;
+export default buildScene;

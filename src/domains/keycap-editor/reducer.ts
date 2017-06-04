@@ -5,6 +5,7 @@ import {
   setActiveSection, SetActiveSection,
   setActiveBackgroundColor, SetActiveBackgroundColor,
   setActiveLegendColor, SetActiveLegendColor,
+  showRenderModal, ShowRenderModal,
   setActiveKeycap, SetActiveKeycap,
   addActiveKeycap, AddActiveKeycap,
   setMouseDown, SetMouseDown,
@@ -36,6 +37,7 @@ class KeycapEditor extends Record({
   activeSection: 'custom',
   activeKeyIds: Set(),
   mouseDown: false,
+  showRenderModal: false,
 }) {
   static build(): KeycapEditor {
     const keyboard = Keyboard.build();
@@ -91,6 +93,10 @@ class KeycapEditor extends Record({
 
   isMouseDown(): boolean {
     return this.get('mouseDown');
+  }
+
+  shouldShowRenderModal(): boolean {
+    return this.get('showRenderModal');
   }
 }
 
@@ -168,6 +174,11 @@ const handleSetMouseDown =
       .set('mouseDown', action.payload.mouseDown)
   );
 
+const handleShowRenderModal =
+  (state: KeycapEditor, action: Action<ShowRenderModal>) => (
+    state.set('showRenderModal', action.payload.show)
+  );
+
 export default createReducer(initialState, {
   [setActiveBackgroundColor.type]: handleSetActiveBackgroundColor,
   [setActiveLegendColor.type]: handleSetActiveLegendColor,
@@ -175,6 +186,7 @@ export default createReducer(initialState, {
   [setActiveKeycap.type]: handleSetActiveKeycap,
   [addActiveKeycap.type]: handleAddActiveKeycap,
   [setMouseDown.type]: handleSetMouseDown,
+  [showRenderModal.type]: handleShowRenderModal,
 });
 
 export {

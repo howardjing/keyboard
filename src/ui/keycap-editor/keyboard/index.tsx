@@ -1,29 +1,29 @@
 import * as React from 'react';
-import KeyboardRender from './keyboard-render';
+import KeyboardRenderer from './keyboard-webgl-renderer';
 import KeyboardModel from '../../../domains/keycap-editor/keyboard';
 
 class Keyboard extends React.Component<{
   keyboard: KeyboardModel,
 }, {
-  keyboardRender: KeyboardRender,
+  renderer: KeyboardRenderer,
 }> {
 
   handleCanvas = (el: HTMLCanvasElement) => {
     const { keyboard } = this.props;
-    const keyboardRender = KeyboardRender.build(el)
+    const renderer = KeyboardRenderer.build(el)
       .setKeyboard(keyboard)
       .render();
 
     this.setState(() => ({
-      keyboardRender,
-    }))
+      renderer,
+    }));
   };
 
   componentWillReceiveProps({ keyboard }) {
     const { keyboard: oldKeyboard } = this.props;
     if (keyboard !== oldKeyboard) {
-      const { keyboardRender } = this.state;
-      keyboardRender.setKeyboard(keyboard);
+      const { renderer } = this.state;
+      renderer.setKeyboard(keyboard);
     }
   }
 
