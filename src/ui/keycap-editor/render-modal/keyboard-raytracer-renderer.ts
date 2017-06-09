@@ -24,7 +24,6 @@ class KeyboardWebGlRenderer {
 
     // TOOD: should camera be part of build-keyboard-scene?
     const camera = new PerspectiveCamera(75, width / height, 0.1, 1000);
-    camera.position.y = 0;
     camera.position.z = 12;
     this.camera = camera;
   }

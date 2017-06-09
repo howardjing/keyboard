@@ -2,6 +2,7 @@ import {
   PerspectiveCamera,
   WebGLRenderer,
   Scene,
+  PCFSoftShadowMap,
 } from 'three';
 import Keyboard from '../../../domains/keycap-editor/keyboard';
 import OrbitControls from './orbit-controls';
@@ -21,10 +22,12 @@ class KeyboardWebGlRenderer {
     const width = 800;
     const height = 450;
     this.renderer.setSize(width, height);
+    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.type = PCFSoftShadowMap;
 
     // TOOD: should camera be part of build-keyboard-scene?
     const camera = new PerspectiveCamera(75, width / height, 0.1, 1000);
-    camera.position.y = -5
+    camera.position.y = -5;
     camera.position.z = 12;
     this.controls = new OrbitControls(camera, this.renderer.domElement);
   }

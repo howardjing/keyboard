@@ -6,10 +6,33 @@ import {
   Mesh,
   Vector3,
   Object3D,
-  PointLight,
+  SpotLight,
+  CameraHelper,
+  SpotLightHelper,
+  AmbientLight,
 } from 'three';
 import { List } from 'immutable';
 import Keyboard, { Keycap } from '../../../domains/keycap-editor/keyboard';
+import STLLoader from './stl-loader';
+
+import dsa1 from './dsa-1';
+import dsa125 from './dsa-1.25';
+import dsa15 from './dsa-1.5';
+import dsa175 from './dsa-1.75';
+import dsa2 from './dsa-2';
+import dsa225 from './dsa-2.25';
+import dsa275 from './dsa-2.75';
+import dsaspacebar from './dsa-spacebar';
+
+const loader = new (STLLoader as any)();
+const DSA_1_GEOMETRY = loader.parseASCII(dsa1);
+const DSA_1_25_GEOMETRY = loader.parseASCII(dsa125);
+const DSA_1_5_GEOMETRY = loader.parseASCII(dsa15);
+const DSA_1_75_GEOMETRY = loader.parseASCII(dsa175);
+const DSA_2_GEOMETRY = loader.parseASCII(dsa2);
+const DSA_2_25_GEOMETRY = loader.parseASCII(dsa225);
+const DSA_2_75_GEOMETRY = loader.parseASCII(dsa275);
+const DSA_SPACEBAR = loader.parseASCII(dsaspacebar);
 
 const buildScene = (keyboard: Keyboard): Scene => {
   const scene = new Scene();
@@ -50,15 +73,15 @@ const buildScene = (keyboard: Keyboard): Scene => {
   }
 
   // add lighting
-
-  const light = new PointLight();
-  light.position.set(50, 50, 50);
-
-  const anotherLight = new PointLight();
-  anotherLight.position.set(-50, -50, 50);
-
-  scene.add(light);
-  scene.add(anotherLight);
+  const light = new SpotLight();
+  light.position.set(-10, 10, 10);
+  light.castShadow = true;
+  light.shadow.mapSize.width = 2048;
+  light.shadow.mapSize.height = 2048;
+  scene.add(new CameraHelper(light.shadow.camera))
+  scene.add(new SpotLightHelper(light));
+  scene.add(light)
+  scene.add(new AmbientLight(0xffffff, 0.2));
 
   // add new keyboard
   scene.add(render);
@@ -102,6 +125,9 @@ const buildCase = (width: number, height: number, depth: number) => {
   const geometry = new BoxGeometry(width, height, depth);
   const material = new MeshPhongMaterial({ color: 0x1a1a1a });
   const mesh = new Mesh(geometry, material);
+
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
   return mesh;
 }
 
@@ -127,7 +153,7 @@ const buildNavigation = (keyboard: Keyboard) => (
 );
 
 const buildAlphanumerics = (keyboard: Keyboard) => (
-  buildSection(keyboard.getAlphanumeric(), 17, 5.5)
+  buildSection(keyboard.getAlphanumeric(), 16, 5.2)
 );
 
 const buildSection = (section: List<List<Keycap>>, targetWidth: number, targetHeight: number) => {
@@ -184,9 +210,33 @@ const buildRow = (
 const SCALAR = 1 / 0.725;
 const buildKeycap = (keycap: Keycap) => {
   const width = keycap.getWidth();
-  const geometry = new BoxGeometry(SCALAR * width * 0.725, SCALAR * 0.725, SCALAR * 0.291);
-  const material = new MeshLambertMaterial({ color: keycap.getBackgroundColor() });
+  let geometry;
+  if (width === 1) {
+    geometry = DSA_1_GEOMETRY;
+  } else if (width === 1.25) {
+    geometry = DSA_1_25_GEOMETRY;
+  } else if (width === 1.5) {
+    geometry = DSA_1_5_GEOMETRY;
+  } else if (width === 1.75) {
+    geometry = DSA_1_75_GEOMETRY;
+  } else if (width === 2) {
+    geometry = DSA_2_GEOMETRY;
+  } else if (width === 2.25) {
+    geometry = DSA_2_25_GEOMETRY;
+  } else if (width === 2.75) {
+    geometry = DSA_2_75_GEOMETRY;
+  } else if (width === 6.25) {
+    geometry = DSA_SPACEBAR;
+  } else {
+    geometry = new BoxGeometry(SCALAR * width * 0.725, SCALAR * 0.725, SCALAR * 0.291);
+    geometry.translate(0, 0, SCALAR * 0.291 / 2);
+  }
+  const material = new MeshPhongMaterial({
+    color: keycap.getBackgroundColor(),
+  });
   const mesh = new Mesh(geometry, material);
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
   return mesh;
 };
 

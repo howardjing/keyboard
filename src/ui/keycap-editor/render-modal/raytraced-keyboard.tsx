@@ -8,6 +8,7 @@ interface PropTypes {
 
 class RaytracedKeyboard extends React.Component<PropTypes, {}> {
   handleEl = (el: HTMLCanvasElement) => {
+    console.log("HANDLE EL")
     const { keyboard } = this.props;
     const canvas = new RaytracerRenderer(el)
       .setKeyboard(keyboard)
