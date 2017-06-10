@@ -7,8 +7,6 @@ import {
   Vector3,
   Object3D,
   SpotLight,
-  CameraHelper,
-  SpotLightHelper,
   AmbientLight,
 } from 'three';
 import { List } from 'immutable';
@@ -42,20 +40,20 @@ const buildScene = (keyboard: Keyboard): Scene => {
   const alphanumerics = buildAlphanumerics(keyboard);
   const navigation = buildNavigation(keyboard);
   const arrows = buildArrows(keyboard);
-  const casing = buildCase(23.25, 8.25, 1);
+  const casing = buildCase(20.5, 7.75, 1);
 
   // hardcoded
   contextual.position.x = -17 / 2;
   contextual.position.y = 3.5;
   alphanumerics.position.x = -17 / 2;
   alphanumerics.position.y = 2;
-  navigation.position.x = 9;
+  navigation.position.x = 7.85;
   navigation.position.y = 2;
-  arrows.position.x = 9;
-  arrows.position.y = -2.5
+  arrows.position.x = 7.85;
+  arrows.position.y = -2.2;
 
-  casing.position.x = 2;
-  casing.position.y = 0.5;
+  casing.position.x = 1.12;
+  casing.position.y = 0.6
   keys.position.z = 0.7;
 
   keys.add(alphanumerics)
@@ -78,10 +76,8 @@ const buildScene = (keyboard: Keyboard): Scene => {
   light.castShadow = true;
   light.shadow.mapSize.width = 2048;
   light.shadow.mapSize.height = 2048;
-  scene.add(new CameraHelper(light.shadow.camera))
-  scene.add(new SpotLightHelper(light));
   scene.add(light)
-  scene.add(new AmbientLight(0xffffff, 0.2));
+  scene.add(new AmbientLight(0xffffff, 0.3));
 
   // add new keyboard
   scene.add(render);
@@ -91,30 +87,30 @@ const buildScene = (keyboard: Keyboard): Scene => {
 
 const buildContextualRow = (keyboard: Keyboard) => {
   const contextual = keyboard.getContextual();
-  const escape = buildRow(contextual.get(0), 2);
-  const f1 = buildRow(contextual.get(1), 4.333);
-  const f5 = buildRow(contextual.get(2), 4.333);
-  const f9 = buildRow(contextual.get(3), 4.333);
-  const print = buildRow(contextual.get(4), 3.25);
+  const escape = buildRow(contextual.get(0), 1.5);
+  const f1 = buildRow(contextual.get(1), 4.1);
+  const f5 = buildRow(contextual.get(2), 4.1)
+  const f9 = buildRow(contextual.get(3), 4.1);
+  const print = buildRow(contextual.get(4), 3.075);
 
   let offsetX = 0;
   const contextualRow = new Object3D();
   contextualRow.add(escape);
 
   // TODO: figue out what padding should be
-  offsetX += 2.5;
+  offsetX += 2.1;
   f1.position.x = offsetX;
   contextualRow.add(f1);
 
-  offsetX += 5;
+  offsetX += 4.75;
   f5.position.x = offsetX;
   contextualRow.add(f5);
 
-  offsetX += 5;
+  offsetX += 4.75;
   f9.position.x = offsetX;
   contextualRow.add(f9);
 
-  offsetX += 5;
+  offsetX += 4.75;
   print.position.x = offsetX;
   contextualRow.add(print);
 
@@ -137,9 +133,9 @@ const buildArrows = (keyboard: Keyboard) => {
   const left = arrows.get(1);
 
   const upRow = buildRow(up, 1);
-  upRow.position.x = 1.15;
-  const leftRow = buildRow(left, 3.25);
-  upRow.position.y = 1.15;
+  upRow.position.x = 1.04;
+  const leftRow = buildRow(left, 3.075);
+  upRow.position.y = 1.03;
 
   const arrowRow = new Object3D();
   arrowRow.add(upRow);
@@ -149,11 +145,11 @@ const buildArrows = (keyboard: Keyboard) => {
 }
 
 const buildNavigation = (keyboard: Keyboard) => (
-  buildSection(keyboard.getNavigation(), 3.25, 2.25)
+  buildSection(keyboard.getNavigation(), 3.075, 2.04)
 );
 
 const buildAlphanumerics = (keyboard: Keyboard) => (
-  buildSection(keyboard.getAlphanumeric(), 16, 5.2)
+  buildSection(keyboard.getAlphanumeric(), 15.7, 5.2)
 );
 
 const buildSection = (section: List<List<Keycap>>, targetWidth: number, targetHeight: number) => {
