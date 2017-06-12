@@ -24,11 +24,11 @@ class KeyboardWebGlRenderer {
     this.renderer.setSize(width, height);
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = PCFSoftShadowMap;
-
+    this.renderer.setClearColor(0xffffff);
     // TOOD: should camera be part of build-keyboard-scene?
     const camera = new PerspectiveCamera(75, width / height, 0.1, 1000);
-    camera.position.y = -5;
-    camera.position.z = 12;
+    camera.position.y = -2;
+    camera.position.z = 9;
     this.controls = new OrbitControls(camera, this.renderer.domElement);
   }
 

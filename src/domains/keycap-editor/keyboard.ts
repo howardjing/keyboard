@@ -97,10 +97,10 @@ const DELETE = () => Keycap.build('Delete');
 const END = () => Keycap.build('End');
 const PAGE_DOWN = () => Keycap.build('PgDn');
 
-const UP = () => Keycap.build('↑');
-const LEFT = () => Keycap.build('←');
-const DOWN = () => Keycap.build('↓');
-const RIGHT = () => Keycap.build('→');
+const UP = () => Keycap.build('Up');
+const LEFT = () => Keycap.build('Left');
+const DOWN = () => Keycap.build('Down');
+const RIGHT = () => Keycap.build('Right');
 
 const section = (...args) => List.of(...args);
 const group = (...args) => List.of(...args);

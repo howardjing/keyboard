@@ -1,4 +1,4 @@
-const { WebIndexPlugin, FuseBox, EnvPlugin, BabelPlugin, UglifyJSPlugin } = require('fuse-box');
+const { WebIndexPlugin, FuseBox, EnvPlugin, BabelPlugin, UglifyJSPlugin, JSONPlugin } = require('fuse-box');
 
 const buildFuse = (production) => {
 
@@ -12,6 +12,7 @@ const buildFuse = (production) => {
         presets: ['es2015']
       }
     }),
+    JSONPlugin(),
   ];
 
   if (production) {

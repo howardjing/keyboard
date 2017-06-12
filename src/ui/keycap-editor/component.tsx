@@ -73,19 +73,11 @@ const KeycapEditor: React.SFC<PropTypes> = ({
         />
       </label>
     </InputGroup>
-    <button
-      onClick={handleRenderClick}
-    >
-      Render
-    </button>
     <Editor
       keyboard={keyboard}
       activeKeys={activeKeys}
     />
     <KeyboardComponent
-      keyboard={keyboard}
-    />
-    <RenderModal
       keyboard={keyboard}
     />
   </div>
