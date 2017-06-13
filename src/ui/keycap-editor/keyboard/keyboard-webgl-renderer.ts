@@ -18,9 +18,12 @@ class KeyboardWebGlRenderer {
   }
 
   constructor(el: HTMLCanvasElement) {
-    this.renderer = new WebGLRenderer({ canvas: el });
-    const width = 800;
-    const height = 450;
+    this.renderer = new WebGLRenderer({
+      canvas: el,
+      antialias: true,
+    });
+    const width = 1200;
+    const height = 675;
     this.renderer.setSize(width, height);
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = PCFSoftShadowMap;
