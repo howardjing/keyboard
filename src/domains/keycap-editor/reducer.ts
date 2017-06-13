@@ -5,7 +5,6 @@ import {
   setActiveSection, SetActiveSection,
   setActiveBackgroundColor, SetActiveBackgroundColor,
   setActiveLegendColor, SetActiveLegendColor,
-  showRenderModal, ShowRenderModal,
   setActiveKeycap, SetActiveKeycap,
   addActiveKeycap, AddActiveKeycap,
   setMouseDown, SetMouseDown,
@@ -174,11 +173,6 @@ const handleSetMouseDown =
       .set('mouseDown', action.payload.mouseDown)
   );
 
-const handleShowRenderModal =
-  (state: KeycapEditor, action: Action<ShowRenderModal>) => (
-    state.set('showRenderModal', action.payload.show)
-  );
-
 export default createReducer(initialState, {
   [setActiveBackgroundColor.type]: handleSetActiveBackgroundColor,
   [setActiveLegendColor.type]: handleSetActiveLegendColor,
@@ -186,7 +180,6 @@ export default createReducer(initialState, {
   [setActiveKeycap.type]: handleSetActiveKeycap,
   [addActiveKeycap.type]: handleAddActiveKeycap,
   [setMouseDown.type]: handleSetMouseDown,
-  [showRenderModal.type]: handleShowRenderModal,
 });
 
 export {

@@ -30,6 +30,7 @@ class Keyboard extends React.Component<{
   render() {
     return (
       <canvas
+        style={{ cursor: 'pointer' }}
         ref={this.handleCanvas}
       />
     );

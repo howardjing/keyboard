@@ -7,7 +7,6 @@ import {
   Section,
 } from '../../domains/keycap-editor/reducer';
 import KeyboardComponent from './keyboard';
-import RenderModal from './render-modal';
 
 interface PropTypes {
   keyboard: Keyboard,
