@@ -21,13 +21,19 @@ export interface SetActiveSection {
 const setActiveBackgroundColor =
   actionCreator<SetActiveBackgroundColor>('SET_ACTIVE_BACKGROUND_COLOR');
 export interface SetActiveBackgroundColor {
-  backgroundColor: string,
+  color: string,
 };
 
 const setActiveLegendColor =
   actionCreator<SetActiveLegendColor>('SET_ACTIVE_LEGEND_COLOR');
 export interface SetActiveLegendColor {
-  legendColor: string,
+  color: string,
+};
+
+const setCaseColor =
+  actionCreator<SetCaseColor>('SET_CASE_COLOR');
+export interface SetCaseColor {
+  color: string,
 };
 
 const setActiveKeycap =
@@ -52,6 +58,7 @@ export {
   setActiveSection,
   setActiveBackgroundColor,
   setActiveLegendColor,
+  setCaseColor,
   setActiveKeycap,
   addActiveKeycap,
   setMouseDown,

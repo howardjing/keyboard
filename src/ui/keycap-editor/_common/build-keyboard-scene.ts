@@ -45,7 +45,7 @@ const buildScene = (keyboard: Keyboard): Scene => {
   const alphanumerics = buildAlphanumerics(keyboard);
   const navigation = buildNavigation(keyboard);
   const arrows = buildArrows(keyboard);
-  const casing = buildCase(20.5, 7.75, 1);
+  const casing = buildCase(keyboard, 20.5, 7.75, 1);
 
   // hardcoded
   contextual.position.x = -17 / 2;
@@ -133,10 +133,10 @@ const buildContextualRow = (keyboard: Keyboard) => {
   return contextualRow;
 }
 
-const buildCase = (width: number, height: number, depth: number) => {
+const buildCase = (keyboard: Keyboard, width: number, height: number, depth: number) => {
   const geometry = new BoxGeometry(width, height, depth);
   const material = new MeshPhongMaterial({
-    color: 0x1a1a1a,
+    color: keyboard.getCaseColor(),
     shininess: 75,
   });
   const mesh = new Mesh(geometry, material);

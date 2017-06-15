@@ -7,7 +7,7 @@ import {
   setActiveSection,
   setActiveBackgroundColor,
   setActiveLegendColor,
-  showRenderModal,
+  setCaseColor,
 } from '../../domains/keycap-editor/actions';
 import Keyboard, { Keycap } from '../../domains/keycap-editor/keyboard';
 import {
@@ -25,7 +25,7 @@ interface PropTypes {
   handleSectionChange: (e: React.FormEvent<HTMLSelectElement>) => any,
   handleBackgroundColorChange: (e: React.FormEvent<HTMLInputElement>) => any,
   handleLegendColorChange: (e: React.FormEvent<HTMLInputElement>) => any,
-  handleRenderClick: () => any,
+  handleCaseColorChange: (e: React.FormEvent<HTMLInputElement>) => any,
 }
 
 const mapStateToProps = (state) => {
@@ -51,16 +51,17 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     }
   },
 
+  handleCaseColorChange: (e) => {
+    const val = e.target.value;
+    return setCaseColor({ color: val });
+  },
+
   handleBackgroundColorChange: (e) => setActiveBackgroundColor({
-    backgroundColor: e.target.value,
+    color: e.target.value,
   }),
 
   handleLegendColorChange: (e) => setActiveLegendColor({
-    legendColor: e.target.value,
-  }),
-
-  handleRenderClick: () => showRenderModal({
-    show: true,
+    color: e.target.value,
   }),
 }, dispatch);
 
@@ -73,7 +74,7 @@ const Editor: React.SFC<PropTypes> = ({
   handleSectionChange,
   handleBackgroundColorChange,
   handleLegendColorChange,
-  handleRenderClick,
+  handleCaseColorChange,
 }) => (
   <Component
     keyboard={keyboard}
@@ -84,7 +85,7 @@ const Editor: React.SFC<PropTypes> = ({
     handleSectionChange={handleSectionChange}
     handleBackgroundColorChange={handleBackgroundColorChange}
     handleLegendColorChange={handleLegendColorChange}
-    handleRenderClick={handleRenderClick}
+    handleCaseColorChange={handleCaseColorChange}
   />
 );
 

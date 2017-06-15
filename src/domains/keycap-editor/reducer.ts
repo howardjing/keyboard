@@ -8,8 +8,10 @@ import {
   setActiveKeycap, SetActiveKeycap,
   addActiveKeycap, AddActiveKeycap,
   setMouseDown, SetMouseDown,
+  setCaseColor, SetCaseColor,
 } from './actions';
 import Keyboard, { Keycap } from './keyboard';
+import * as foo from './actions';
 
 const whenConsistent = <T, K>(
   list: Collection<T, T>,
@@ -104,14 +106,21 @@ const initialState = KeycapEditor.build();
 const handleSetActiveBackgroundColor =
   (state: KeycapEditor, action: Action<SetActiveBackgroundColor>) => (
     state.update('keyboard', (keyboard: Keyboard) =>
-      keyboard.setBackgroundColors(state.getActiveKeys(), action.payload.backgroundColor)
+      keyboard.setBackgroundColors(state.getActiveKeys(), action.payload.color)
     )
   );
 
 const handleSetActiveLegendColor =
   (state: KeycapEditor, action: Action<SetActiveLegendColor>) => (
     state.update('keyboard', (keyboard: Keyboard) =>
-      keyboard.setLegendColors(state.getActiveKeys(), action.payload.legendColor)
+      keyboard.setLegendColors(state.getActiveKeys(), action.payload.color)
+    )
+  );
+
+const handleSetCaseColor =
+  (state: KeycapEditor, action: Action<SetCaseColor>) => (
+    state.update('keyboard', (keyboard: Keyboard) =>
+      keyboard.setCaseColor(action.payload.color)
     )
   );
 
@@ -176,6 +185,7 @@ const handleSetMouseDown =
 export default createReducer(initialState, {
   [setActiveBackgroundColor.type]: handleSetActiveBackgroundColor,
   [setActiveLegendColor.type]: handleSetActiveLegendColor,
+  [setCaseColor.type]: handleSetCaseColor,
   [setActiveSection.type]: handleSetActiveSection,
   [setActiveKeycap.type]: handleSetActiveKeycap,
   [addActiveKeycap.type]: handleAddActiveKeycap,

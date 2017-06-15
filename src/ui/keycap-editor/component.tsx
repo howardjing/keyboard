@@ -16,8 +16,8 @@ interface PropTypes {
   legendColor: string | null,
   handleSectionChange: (e: React.FormEvent<HTMLSelectElement>) => any,
   handleBackgroundColorChange: (e: React.FormEvent<HTMLInputElement>) => any,
+  handleCaseColorChange: (e: React.FormEvent<HTMLInputElement>) => any,
   handleLegendColorChange: (e: React.FormEvent<HTMLInputElement>) => any,
-  handleRenderClick: () => any,
 }
 
 const KeycapEditor: React.SFC<PropTypes> = ({
@@ -29,7 +29,7 @@ const KeycapEditor: React.SFC<PropTypes> = ({
   handleSectionChange,
   handleBackgroundColorChange,
   handleLegendColorChange,
-  handleRenderClick,
+  handleCaseColorChange,
 }) => (
   <div>
     <InputGroup>
@@ -69,6 +69,17 @@ const KeycapEditor: React.SFC<PropTypes> = ({
           value={legendColor || ''}
           placeholder="#000"
           onChange={handleLegendColorChange}
+        />
+      </label>
+    </InputGroup>
+    <InputGroup>
+      <label>
+        <Label>Case color</Label>
+        <input
+          type="text"
+          value={keyboard.getCaseColor()}
+          placeholder="#1a1a1a"
+          onChange={handleCaseColorChange}
         />
       </label>
     </InputGroup>

@@ -169,6 +169,7 @@ class Keyboard extends Record({
   navigation: section(),
   arrows: section(),
   keycaps: Map(),
+  caseColor: '#2d2d2d',
 }) {
   static build(): Keyboard {
     const contextual = instantiateSection(CONTEXTUAL);
@@ -300,6 +301,10 @@ class Keyboard extends Record({
       .concat(List.of(space));
   }
 
+  getCaseColor(): string {
+    return this.get('caseColor');
+  }
+
   private setKeycaps(keycaps: Set<Keycap>, updater: (keycap: Keycap) => Keycap): this {
     return <this>this.withMutations(keyboard => {
       keycaps.forEach(keycap => {
@@ -325,6 +330,10 @@ class Keyboard extends Record({
     return this.setKeycaps(keycaps, (keycap) =>
       keycap.setLegendColor(color)
     );
+  }
+
+  setCaseColor(color: string): this {
+    return this.set('caseColor', color) as this;
   }
 }
 

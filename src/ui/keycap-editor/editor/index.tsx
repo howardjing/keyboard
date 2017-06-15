@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { List, Map, Set } from 'immutable';
 import styled from 'styled-components';
-import { darken } from 'polished';
+import { darken, lighten } from 'polished';
 import Keyboard, { Keycap as Cap } from '../../../domains/keycap-editor/keyboard';
 import Keycap, { KEYCAP_BASE } from './keycap';
 
@@ -27,8 +27,9 @@ const Editor: React.SFC<{
   const up = arrows.get(0);
   const left = arrows.get(1);
 
+  const caseColor = keyboard.getCaseColor();
   return (
-    <Frame>
+    <Frame color={caseColor}>
       <Contextual>
         <PrimarySectionContextual>
           <EscKeycaps>
@@ -121,13 +122,25 @@ const MARGIN_WIDTH = 2;
 const FRAME_BEZEL = 12;
 const SECTION_DIVIDER = 12;
 
-const Frame = styled.div`
-  background-color: #2d2d2d;
+const _FRAME: React.SFC<{
+  className?: string,
+  color: string,
+}> = ({
+  className,
+  children,
+}) => (
+  <div className={className}>
+    {children}
+  </div>
+);
+
+const Frame = styled(_FRAME)`
+  background-color: ${({ color }) => color};
   padding: ${() => FRAME_BEZEL}px;
-  border-top: 2px solid #3c3c3c;
-  border-right: 6px solid #585858;
-  border-bottom: 8px solid #3c3c3c;
-  border-left: 2px solid #585858;
+  border-top: 2px solid ${({ color }) => lighten(0.1, color)};
+  border-right: 6px solid ${({ color }) => lighten(0.2, color)};
+  border-bottom: 8px solid ${({ color }) => lighten(0.1, color)};
+  border-left: 2px solid ${({ color }) => lighten(0.2, color)};
   border-radius: 2px;
   width: ${() => getWidth(18) + SECTION_DIVIDER}px;
 `;
