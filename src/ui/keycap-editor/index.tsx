@@ -23,9 +23,9 @@ interface PropTypes {
   backgroundColor: string | null,
   legendColor: string | null,
   handleSectionChange: (e: React.FormEvent<HTMLSelectElement>) => any,
-  handleBackgroundColorChange: (e: React.FormEvent<HTMLInputElement>) => any,
-  handleLegendColorChange: (e: React.FormEvent<HTMLInputElement>) => any,
-  handleCaseColorChange: (e: React.FormEvent<HTMLInputElement>) => any,
+  handleBackgroundColorChange: (color: string) => any,
+  handleLegendColorChange: (color: string) => any,
+  handleCaseColorChange: (color: string) => any,
 }
 
 const mapStateToProps = (state) => {
@@ -51,17 +51,16 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     }
   },
 
-  handleCaseColorChange: (e) => {
-    const val = e.target.value;
-    return setCaseColor({ color: val });
+  handleCaseColorChange: (color: string) => {
+    return setCaseColor({ color });
   },
 
-  handleBackgroundColorChange: (e) => setActiveBackgroundColor({
-    color: e.target.value,
+  handleBackgroundColorChange: (color: string) => setActiveBackgroundColor({
+    color,
   }),
 
-  handleLegendColorChange: (e) => setActiveLegendColor({
-    color: e.target.value,
+  handleLegendColorChange: (color: string) => setActiveLegendColor({
+    color,
   }),
 }, dispatch);
 

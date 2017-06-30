@@ -2,7 +2,7 @@ import * as React from 'react';
 import KeyboardRenderer from './keyboard-webgl-renderer';
 import KeyboardModel from '../../../domains/keycap-editor/keyboard';
 
-class Keyboard extends React.Component<{
+class Keyboard extends React.PureComponent<{
   keyboard: KeyboardModel,
 }, {
   renderer: KeyboardRenderer,

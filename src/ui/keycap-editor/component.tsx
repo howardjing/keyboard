@@ -7,6 +7,8 @@ import {
   Section,
 } from '../../domains/keycap-editor/reducer';
 import KeyboardComponent from './keyboard';
+import Swatches from './swatches';
+import Input from './_common/input';
 
 interface PropTypes {
   keyboard: Keyboard,
@@ -15,9 +17,9 @@ interface PropTypes {
   backgroundColor: string | null,
   legendColor: string | null,
   handleSectionChange: (e: React.FormEvent<HTMLSelectElement>) => any,
-  handleBackgroundColorChange: (e: React.FormEvent<HTMLInputElement>) => any,
-  handleCaseColorChange: (e: React.FormEvent<HTMLInputElement>) => any,
-  handleLegendColorChange: (e: React.FormEvent<HTMLInputElement>) => any,
+  handleBackgroundColorChange: (color: string) => any,
+  handleCaseColorChange: (color: string) => any,
+  handleLegendColorChange: (color: string) => any,
 }
 
 const KeycapEditor: React.SFC<PropTypes> = ({
@@ -53,29 +55,31 @@ const KeycapEditor: React.SFC<PropTypes> = ({
     <InputGroup>
       <label>
         <Label>Background color</Label>
-        <input
+        <Input
           type="text"
           value={backgroundColor || ''}
           onChange={handleBackgroundColorChange}
           placeholder="#fff"
         />
+        <Swatches onClick={handleBackgroundColorChange} />
       </label>
     </InputGroup>
     <InputGroup>
       <label>
         <Label>Legend color</Label>
-        <input
+        <Input
           type="text"
           value={legendColor || ''}
           placeholder="#000"
           onChange={handleLegendColorChange}
         />
+        <Swatches onClick={handleLegendColorChange} />
       </label>
     </InputGroup>
     <InputGroup>
       <label>
         <Label>Case color</Label>
-        <input
+        <Input
           type="text"
           value={keyboard.getCaseColor()}
           placeholder="#1a1a1a"
