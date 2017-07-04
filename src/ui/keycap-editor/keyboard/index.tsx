@@ -31,6 +31,11 @@ class Keyboard extends React.PureComponent<{
     }
   }
 
+  componentWillUnmount() {
+    const { renderer } = this.state;
+    renderer.cleanup();
+  }
+
   render() {
     return (
       <canvas

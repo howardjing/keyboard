@@ -70,11 +70,6 @@ const buildScene = (keyboard: Keyboard): Scene => {
   render.add(keys);
   render.add(casing);
 
-  // clear scene
-  while (scene.children.length > 0) {
-    scene.remove(scene.children[0]);
-  }
-
   // build background
   const backgroundGeometry = new BoxGeometry(40, 15, 4);
   const backgroundMaterial = new MeshLambertMaterial({

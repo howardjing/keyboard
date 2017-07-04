@@ -69,13 +69,13 @@ const Swatches: React.SFC<PropTypes> = ({
 );
 
 const List = styled.ul`
-  display: flex;
   list-style: none;
   margin: 0;
   padding: 0;
 `;
 
 const Li = styled.li`
+  display: inline;
   margin-right: 5px;
 `;
 
