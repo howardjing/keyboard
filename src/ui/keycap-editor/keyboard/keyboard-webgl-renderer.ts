@@ -2,23 +2,56 @@ import {
   PerspectiveCamera,
   WebGLRenderer,
   Scene,
+  Mesh,
+  Object3D,
   PCFSoftShadowMap,
 } from 'three';
-import Keyboard from '../../../domains/keycap-editor/keyboard';
+import { List } from 'immutable';
+import Keyboard, { Keycap } from '../../../domains/keycap-editor/keyboard';
 import OrbitControls from './orbit-controls';
 import buildKeyboardScene from '../_common/build-keyboard-scene';
+
+const setColors = (threeJsKeys: Object3D, keys: List<List<Keycap>>) => {
+  keys.forEach((row, i) => {
+    row.forEach((key, j) => {
+      const backgroundColor = key.getBackgroundColor();
+      const legendColor = key.getLegendColor();
+      // WARNING: unsafe
+      const threeJsKey = threeJsKeys.children[i].children[j];
+      // HACK: first child is the font mesh
+      const threeJsKeyLegend = threeJsKey.children[0];
+
+      setColor(threeJsKey, backgroundColor);
+
+      if (threeJsKeyLegend) {
+        setColor(threeJsKeyLegend, legendColor);
+      }
+    });
+  })
+};
+
+const setColor = (mesh, color) => {
+  mesh.material.color.setStyle(color);
+};
 
 class KeyboardWebGlRenderer {
   scene: Scene;
   controls: any;
   renderer: WebGLRenderer;
   animationFrameId?: number;
+  sceneChildren: {
+    casing: Mesh,
+    contextual: Object3D,
+    alphanumerics: Object3D,
+    navigation: Object3D,
+    arrows: Object3D,
+  };
 
-  static build(el: HTMLCanvasElement): KeyboardWebGlRenderer {
-    return new this(el);
+  static build(el: HTMLCanvasElement, keyboard: Keyboard): KeyboardWebGlRenderer {
+    return new this(el, keyboard);
   }
 
-  constructor(el: HTMLCanvasElement) {
+  constructor(el: HTMLCanvasElement, keyboard: Keyboard) {
     this.renderer = new WebGLRenderer({
       canvas: el,
       antialias: true,
@@ -30,18 +63,47 @@ class KeyboardWebGlRenderer {
     this.renderer.shadowMap.type = PCFSoftShadowMap;
     this.renderer.setClearColor(0xffffff);
     // TOOD: should camera be part of build-keyboard-scene?
-    const camera = new PerspectiveCamera(75, width / height, 0.1, 1000);
+    const camera = new PerspectiveCamera(75, width / height, 0.1, 2000);
     camera.position.y = -0.5;
-    camera.position.z = 6.5;
+    camera.position.z = 7.5;
     this.controls = new OrbitControls(camera, this.renderer.domElement);
+
+    const {
+      scene,
+      casing,
+      contextual,
+      alphanumerics,
+      navigation,
+      arrows,
+    } = buildKeyboardScene(keyboard);
+
+    this.scene = scene;
+    this.sceneChildren = {
+      casing,
+      contextual,
+      alphanumerics,
+      navigation,
+      arrows,
+    };
   }
+
+  /**
+   * TODO: this doesn't handle switching between types of keyboards easily.
+   * When I originally tried to empty out the scene + rebuild the scene on keyboard
+   * change, ran into some pretty big memory leaks.
+   *
+   * See https://stackoverflow.com/questions/12945092/memory-leak-with-three-js-and-many-shapes
+   */
   setKeyboard(keyboard: Keyboard): this {
-    this.scene = buildKeyboardScene(keyboard);
+    setColors(this.sceneChildren.contextual, keyboard.getContextual());
+    setColors(this.sceneChildren.alphanumerics, keyboard.getAlphanumeric());
+    setColors(this.sceneChildren.navigation, keyboard.getNavigation());
+    setColors(this.sceneChildren.arrows, keyboard.getArrows());
+    setColor(this.sceneChildren.casing, keyboard.getCaseColor());
     return this;
   }
 
   render(): this {
-    console.log("RENDER")
     this.animate();
     this.renderer.render(this.scene, this.controls.object);
     return this;

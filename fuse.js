@@ -47,7 +47,6 @@ if (process.argv[2] === 'bundle-production') {
 
   fuse.bundle('app')
     .watch()
-    .hmr()
     .sourceMaps(true)
     .instructions('>index.tsx')
 

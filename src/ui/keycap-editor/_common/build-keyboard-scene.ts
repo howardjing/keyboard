@@ -37,7 +37,7 @@ const DSA_SPACEBAR = loader.parseASCII(dsaspacebar);
 
 const HELVETIKER = new Font(helvetiker);
 
-const buildScene = (keyboard: Keyboard): Scene => {
+const buildScene = (keyboard: Keyboard) => {
   const scene = new Scene();
   const render = new Object3D();
   const keys = new Object3D();
@@ -93,7 +93,14 @@ const buildScene = (keyboard: Keyboard): Scene => {
   scene.add(render);
   scene.add(background);
 
-  return scene;
+  return {
+    scene,
+    casing,
+    contextual,
+    alphanumerics,
+    navigation,
+    arrows,
+  }
 }
 
 const buildContextualRow = (keyboard: Keyboard) => {
@@ -262,7 +269,6 @@ const buildKeycap = (keycap: Keycap) => {
     });
 
     primaryText.center();
-
     const primaryTextMesh = new Mesh(primaryText, new MeshPhongMaterial({
       color: keycap.getLegendColor(),
     }));
