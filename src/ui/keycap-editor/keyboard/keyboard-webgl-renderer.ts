@@ -7,9 +7,14 @@ import {
   PCFSoftShadowMap,
 } from 'three';
 import { List } from 'immutable';
+import * as Color from 'color';
 import Keyboard, { Keycap } from '../../../domains/keycap-editor/keyboard';
 import OrbitControls from './orbit-controls';
 import buildKeyboardScene from '../_common/build-keyboard-scene';
+
+const toRgb = (color: Color): string => (
+  color.rgb().string()
+);
 
 const setColors = (threeJsKeys: Object3D, keys: List<List<Keycap>>) => {
   keys.forEach((row, i) => {
@@ -30,8 +35,8 @@ const setColors = (threeJsKeys: Object3D, keys: List<List<Keycap>>) => {
   })
 };
 
-const setColor = (mesh, color) => {
-  mesh.material.color.setStyle(color);
+const setColor = (mesh, color: Color) => {
+  mesh.material.color.setStyle(toRgb(color));
 };
 
 class KeyboardWebGlRenderer {

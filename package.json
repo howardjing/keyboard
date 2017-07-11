@@ -22,6 +22,7 @@
     "typescript": "^2.3.3"
   },
   "dependencies": {
+    "color": "^2.0.0",
     "immutable": "^3.8.1",
     "polished": "^1.1.2",
     "react": "^15.5.4",
@@ -29,7 +30,7 @@
     "react-redux": "^5.0.5",
     "redux": "^3.6.0",
     "redux-immutablejs": "^0.0.8",
-    "styled-components": "^1.4.6",
+    "styled-components": "^2.1.1",
     "three": "^0.86.0",
     "uglify-js": "^2.8.27"
   }

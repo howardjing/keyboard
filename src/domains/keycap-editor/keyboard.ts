@@ -1,4 +1,5 @@
 import { Record, List, Map, Collection, Set } from 'immutable';
+import * as Color from 'color';
 
 // mechanism for generating id
 let _id = 0;
@@ -169,7 +170,7 @@ class Keyboard extends Record({
   navigation: section(),
   arrows: section(),
   keycaps: Map(),
-  caseColor: '#2d2d2d',
+  caseColor: Color('#2d2d2d'),
 }) {
   static build(): Keyboard {
     const contextual = instantiateSection(CONTEXTUAL);
@@ -301,7 +302,7 @@ class Keyboard extends Record({
       .concat(List.of(space));
   }
 
-  getCaseColor(): string {
+  getCaseColor(): Color {
     return this.get('caseColor');
   }
 
@@ -320,19 +321,19 @@ class Keyboard extends Record({
     })
   }
 
-  setBackgroundColors(keycaps: Set<Keycap>, color: string): this {
+  setBackgroundColors(keycaps: Set<Keycap>, color: Color): this {
     return this.setKeycaps(keycaps, (keycap) => {
       return keycap.setBackgroundColor(color)
     });
   }
 
-  setLegendColors(keycaps: Set<Keycap>, color: string): this {
+  setLegendColors(keycaps: Set<Keycap>, color: Color): this {
     return this.setKeycaps(keycaps, (keycap) =>
       keycap.setLegendColor(color)
     );
   }
 
-  setCaseColor(color: string): this {
+  setCaseColor(color: Color): this {
     return this.set('caseColor', color) as this;
   }
 }
@@ -342,16 +343,16 @@ class Keycap extends Record({
   primaryLabel: "",
   secondaryLabel: "",
   width: 1,
-  backgroundColor: "#787667",
-  legendColor: "#000",
+  backgroundColor: Color('#91867a'),
+  legendColor: Color('#000'),
   convex: false,
 }) {
   static build(
     primaryLabel: string = '',
     secondaryLabel: string = '',
     width: number = 1,
-    backgroundColor: string | undefined = undefined,
-    legendColor: string | undefined = undefined,
+    backgroundColor: Color | undefined = undefined,
+    legendColor: Color | undefined = undefined,
     convex: boolean = false,
   ): Keycap {
     const params = {
@@ -389,11 +390,11 @@ class Keycap extends Record({
     return this.get('width');
   }
 
-  getBackgroundColor(): string {
+  getBackgroundColor(): Color {
     return this.get('backgroundColor');
   }
 
-  getLegendColor(): string {
+  getLegendColor(): Color {
     return this.get('legendColor');
   }
 
@@ -401,11 +402,11 @@ class Keycap extends Record({
     return this.get('convex');
   }
 
-  setBackgroundColor(color: string): this {
+  setBackgroundColor(color: Color): this {
     return <this>this.set('backgroundColor', color);
   }
 
-  setLegendColor(color: string): this {
+  setLegendColor(color: Color): this {
     return <this>this.set('legendColor', color);
   }
 }

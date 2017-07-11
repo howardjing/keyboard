@@ -57,8 +57,9 @@ const Swatches: React.SFC<PropTypes> = ({
             return (
               <Li
                 key={key}
+                onClick={() => onClick(color)}
               >
-                <Swatch color={color} onClick={onClick} />
+                <Swatch color={color} />
                 {key}
               </Li>
             )
@@ -72,6 +73,7 @@ const List = styled.ul`
   list-style: none;
   margin: 0;
   padding: 0;
+  cursor: pointer;
 `;
 
 const Li = styled.li`

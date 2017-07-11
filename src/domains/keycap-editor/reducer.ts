@@ -1,5 +1,6 @@
 import { Record, List, Collection, Set} from 'immutable';
 import { createReducer } from 'redux-immutablejs';
+import * as Color from 'color';
 import { Action } from '../../domains/actions';
 import {
   setActiveSection, SetActiveSection,
@@ -80,13 +81,13 @@ class KeycapEditor extends Record({
       .getKeys(this.getActiveKeyIds()) as any;
   }
 
-  getActiveBackgroundColor(): string | null {
+  getActiveBackgroundColor(): Color | null {
     return whenConsistent(this.getActiveKeys(), (key) =>
       key.getBackgroundColor()
     );
   }
 
-  getActiveLegendColor(): string | null {
+  getActiveLegendColor(): Color | null {
     return whenConsistent(this.getActiveKeys(), (key) =>
       key.getLegendColor()
     );

@@ -1,8 +1,13 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { darken } from 'polished';
+import * as Color from 'color';
 import { Keycap as Cap } from '../../../../domains/keycap-editor/keyboard';
 import { KEYCAP_BASE } from './index';
+
+const toRgb = (color: Color): string => (
+  color.rgb().string()
+);
 
 const Keycap: React.SFC<{
   keycap: Cap,
@@ -16,8 +21,8 @@ const Keycap: React.SFC<{
   handleMouseEnter,
 }) => {
   const width = keycap.getWidth();
-  const backgroundColor = keycap.getBackgroundColor();
-  const legendColor = keycap.getLegendColor();
+  const backgroundColor = toRgb(keycap.getBackgroundColor());
+  const legendColor = toRgb(keycap.getLegendColor());
   const primaryLabel = keycap.getPrimaryLabel();
   const secondaryLabel = keycap.getSecondaryLabel();
 
@@ -59,6 +64,9 @@ const _Outercap: React.SFC<{
     className={className}
     onMouseDown={onMouseDown}
     onMouseEnter={onMouseEnter}
+    style={{
+      backgroundColor: darken(0.1, backgroundColor),
+    }}
   >
     {children}
   </div>
@@ -67,7 +75,6 @@ const _Outercap: React.SFC<{
 const Outercap = styled(_Outercap)`
   display: flex;
   flex: 0 0 auto;
-  background-color: ${(props) => darken(0.1, props.backgroundColor)};
   box-sizing: border-box;
   border-radius: 5px;
   width: ${props => props.width * KEYCAP_BASE}px;
@@ -88,7 +95,13 @@ const _Innercap: React.SFC<{
   backgroundColor,
   legendColor,
 }) => (
-  <div className={className}>
+  <div
+    className={className}
+    style={{
+      backgroundColor,
+      color: legendColor,
+    }}
+  >
     {children}
   </div>
 );
@@ -103,8 +116,6 @@ const Innercap = styled(_Innercap)`
   height: 90%;
   padding: 2px;
   flex: 0 0 auto;
-  background-color: ${props => props.backgroundColor};
-  color: ${props => props.legendColor};
   border-radius: 3px;
   font-size: 12px;
 `;

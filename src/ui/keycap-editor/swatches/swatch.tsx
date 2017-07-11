@@ -4,27 +4,21 @@ import styled from 'styled-components';
 class Swatch extends React.PureComponent<{
   className?: string,
   color: string,
-  onClick: (color: string) => any,
+  width?: number,
+  height?: number
 }, {}> {
-
-  handleClick = () => {
-    const {
-      onClick,
-      color,
-    } = this.props;
-
-    onClick(color);
-  };
-
   render() {
     const {
       className,
+      color,
     } = this.props;
 
     return (
       <div
         className={className}
-        onClick={this.handleClick}
+        style={{
+          backgroundColor: color,
+        }}
       />
     );
   }
@@ -32,10 +26,9 @@ class Swatch extends React.PureComponent<{
 
 const Colored = styled(Swatch)`
   display: inline-block;
-  width: 10px;
-  height: 10px;
-  background-color: ${({ color }) => color};
-  cursor: pointer;
+  width: ${({ width }) => width || 10}px;
+  height: ${({ height }) => height || 10}px;
+  vertical-align: middle;
 `;
 
 export default Colored;

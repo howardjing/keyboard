@@ -2,8 +2,13 @@ import * as React from 'react';
 import { List, Map, Set } from 'immutable';
 import styled from 'styled-components';
 import { darken, lighten } from 'polished';
+import * as Color from 'color';
 import Keyboard, { Keycap as Cap } from '../../../domains/keycap-editor/keyboard';
 import Keycap, { KEYCAP_BASE } from './keycap';
+
+const toRgb = (color: Color): string => (
+  color.rgb().string()
+);
 
 const Editor: React.SFC<{
   keyboard: Keyboard,
@@ -26,8 +31,7 @@ const Editor: React.SFC<{
   const arrows = keyboard.getArrows();
   const up = arrows.get(0);
   const left = arrows.get(1);
-
-  const caseColor = keyboard.getCaseColor();
+  const caseColor = toRgb(keyboard.getCaseColor());
   return (
     <Frame color={caseColor}>
       <Contextual>

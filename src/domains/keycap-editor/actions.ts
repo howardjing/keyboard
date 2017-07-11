@@ -1,3 +1,5 @@
+import * as Color from 'color';
+
 import {
   ActionCreator,
   makeActionCreator,
@@ -21,19 +23,22 @@ export interface SetActiveSection {
 const setActiveBackgroundColor =
   actionCreator<SetActiveBackgroundColor>('SET_ACTIVE_BACKGROUND_COLOR');
 export interface SetActiveBackgroundColor {
-  color: string,
+  color: Color,
+  preview: boolean,
 };
 
 const setActiveLegendColor =
   actionCreator<SetActiveLegendColor>('SET_ACTIVE_LEGEND_COLOR');
 export interface SetActiveLegendColor {
-  color: string,
+  color: Color,
+  preview: boolean,
 };
 
 const setCaseColor =
   actionCreator<SetCaseColor>('SET_CASE_COLOR');
 export interface SetCaseColor {
-  color: string,
+  color: Color,
+  preview: boolean,
 };
 
 const setActiveKeycap =

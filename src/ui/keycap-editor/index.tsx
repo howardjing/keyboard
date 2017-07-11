@@ -2,6 +2,7 @@ import * as React from 'react';
 import { List, Set } from 'immutable';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import * as Color from 'color';
 import { getEditor } from '../../domains/keycap-editor/selectors';
 import {
   setActiveSection,
@@ -20,12 +21,12 @@ interface PropTypes {
   keyboard: Keyboard,
   activeKeys: Set<Keycap>,
   section: Section,
-  backgroundColor: string | null,
-  legendColor: string | null,
+  backgroundColor: Color | null,
+  legendColor: Color | null,
   handleSectionChange: (e: React.FormEvent<HTMLSelectElement>) => any,
-  handleBackgroundColorChange: (color: string) => any,
-  handleLegendColorChange: (color: string) => any,
-  handleCaseColorChange: (color: string) => any,
+  handleBackgroundColorChange: (color: Color, preview?: boolean) => any,
+  handleLegendColorChange: (color: Color, preview?: boolean) => any,
+  handleCaseColorChange: (color: Color, preview?: boolean) => any,
 }
 
 const mapStateToProps = (state) => {
@@ -51,17 +52,15 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     }
   },
 
-  handleCaseColorChange: (color: string) => {
-    return setCaseColor({ color });
+  handleCaseColorChange: (color: Color, preview: boolean = false) => {
+    return setCaseColor({ color, preview });
   },
 
-  handleBackgroundColorChange: (color: string) => setActiveBackgroundColor({
-    color,
-  }),
+  handleBackgroundColorChange: (color: string, preview: boolean = false) =>
+    setActiveBackgroundColor({ color, preview }),
 
-  handleLegendColorChange: (color: string) => setActiveLegendColor({
-    color,
-  }),
+  handleLegendColorChange: (color: string, preview: boolean = false) =>
+    setActiveLegendColor({ color, preview }),
 }, dispatch);
 
 const Editor: React.SFC<PropTypes> = ({

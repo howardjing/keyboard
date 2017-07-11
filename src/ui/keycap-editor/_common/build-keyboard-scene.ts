@@ -12,6 +12,7 @@ import {
   Font,
 } from 'three';
 import { List } from 'immutable';
+import * as Color from 'color';
 import Keyboard, { Keycap } from '../../../domains/keycap-editor/keyboard';
 import STLLoader from './stl-loader';
 
@@ -103,6 +104,10 @@ const buildScene = (keyboard: Keyboard) => {
   }
 }
 
+const toRgb = (color: Color): string => (
+  color.rgb().string()
+);
+
 const buildContextualRow = (keyboard: Keyboard) => {
   const contextual = keyboard.getContextual();
   const escape = buildRow(contextual.get(0), 1.5);
@@ -138,7 +143,7 @@ const buildContextualRow = (keyboard: Keyboard) => {
 const buildCase = (keyboard: Keyboard, width: number, height: number, depth: number) => {
   const geometry = new BoxGeometry(width, height, depth);
   const material = new MeshPhongMaterial({
-    color: keyboard.getCaseColor(),
+    color: toRgb(keyboard.getCaseColor()),
     shininess: 75,
   });
   const mesh = new Mesh(geometry, material);
@@ -250,7 +255,7 @@ const buildKeycap = (keycap: Keycap) => {
     geometry.translate(0, 0, SCALAR * 0.291 / 2);
   }
   const material = new MeshPhongMaterial({
-    color: keycap.getBackgroundColor(),
+    color: toRgb(keycap.getBackgroundColor()),
   });
 
   const mesh = new Mesh(geometry, material);
@@ -270,7 +275,7 @@ const buildKeycap = (keycap: Keycap) => {
 
     primaryText.center();
     const primaryTextMesh = new Mesh(primaryText, new MeshPhongMaterial({
-      color: keycap.getLegendColor(),
+      color: toRgb(keycap.getLegendColor()),
     }));
     primaryTextMesh.position.z = HEIGHT + 0.05;
     mesh.add(primaryTextMesh);
