@@ -17,7 +17,9 @@ const getCoordinatesFromColor = (color: Color): { x: number, y: number } => {
   const y = (100 - hsl.lightness()) * POINT_SIZE;
 
   return { x, y };
-}
+};
+
+const getHue = (color: Color | null) => color && color.hue();
 
 class ColorGradient extends React.Component<{
   color: Color,
@@ -38,7 +40,7 @@ class ColorGradient extends React.Component<{
     const { color: nextColor } = nextProps;
     const { color } = this.props;
 
-    if (nextColor !== color && nextColor.hue() !== color.hue()) {
+    if (nextColor !== color && getHue(nextColor) !== getHue(color)) {
       const { canvas } = this.state;
       if (canvas) {
         this.drawGradient(canvas, nextColor);

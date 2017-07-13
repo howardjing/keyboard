@@ -41,15 +41,8 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  handleSectionChange: (e) => {
-    const val = e.target.value;
-    if (isSection(val)) {
-      return setActiveSection({ section: val });
-    } else {
-      return ({
-        type: 'identity',
-      });
-    }
+  handleSectionChange: (section: Section) => {
+    return setActiveSection({ section });
   },
 
   handleCaseColorChange: (color: Color, preview: boolean = false) => {
