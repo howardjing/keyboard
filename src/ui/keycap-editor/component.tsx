@@ -11,6 +11,7 @@ import KeyboardComponent from './keyboard';
 import Swatches from './swatches';
 import Swatch from './swatch';
 import Input from './_common/input';
+import ColorInput from './color-input';
 import { TabbedSelect, Tab } from './_common/tabbed-select';
 import ColorPicker from './color-picker';
 
@@ -18,19 +19,19 @@ interface PropTypes {
 	keyboard: Keyboard,
 	activeKeys: Set<Keycap>
 	section: Section,
-	backgroundColor: Color | null,
-	legendColor: Color | null,
+	backgroundColor: Color.Color | null,
+	legendColor: Color.Color | null,
 	handleSectionChange: (section: Section) => any,
-	handleBackgroundColorChange: (color: Color, preview?: boolean) => any,
-	handleCaseColorChange: (color: Color, preview?: boolean) => any,
-	handleLegendColorChange: (color: Color, preview?: boolean) => any,
+	handleBackgroundColorChange: (color: Color.Color, preview?: boolean) => any,
+	handleCaseColorChange: (color: Color.Color, preview?: boolean) => any,
+	handleLegendColorChange: (color: Color.Color, preview?: boolean) => any,
 }
 
 interface State {
 	tabIndex: number,
 };
 
-const toRgb = (color: Color): string => (
+const toRgb = (color: Color.Color): string => (
 	color.rgb().string()
 );
 
@@ -83,27 +84,19 @@ class KeycapEditor extends React.PureComponent<PropTypes, State> {
 		}));
 	};
 
-	handleColor = (fn: (color: Color) => any, color: string) => {
-		try {
-			fn(Color(color))
-		} catch (e) {
-
-		}
-	};
-
-	handleBackgroundColorChange = (color: string) => {
+	handleBackgroundColorChange = (color: Color.Color) => {
 		const { handleBackgroundColorChange } = this.props;
-		this.handleColor(handleBackgroundColorChange, color);
+		handleBackgroundColorChange(color);
 	};
 
-	handleCaseColorChange = (color: string) => {
+	handleCaseColorChange = (color: Color.Color) => {
 		const { handleCaseColorChange } = this.props;
-		this.handleColor(handleCaseColorChange, color);
+		handleCaseColorChange(color);
 	};
 
-	handleLegendColorChange = (color: string) => {
+	handleLegendColorChange = (color: Color.Color) => {
 		const { handleLegendColorChange } = this.props;
-		this.handleColor(handleLegendColorChange, color);
+		handleLegendColorChange(color);
 	};
 
 	render() {
@@ -120,7 +113,7 @@ class KeycapEditor extends React.PureComponent<PropTypes, State> {
 
 		const backgroundColorString = backgroundColor ? toRgb(backgroundColor) : '';
 		const legendColorString = legendColor ? toRgb(legendColor) : '';
-		const caseColorString = toRgb(keyboard.getCaseColor());
+		const caseColor = keyboard.getCaseColor();
 
 		return (
 			<div>
@@ -138,13 +131,7 @@ class KeycapEditor extends React.PureComponent<PropTypes, State> {
 						<InputGroup>
 							<label>
 								<Label>Case color</Label>
-								<Swatch color={caseColorString} />
-								<Input
-									type="text"
-									value={caseColorString}
-									placeholder="#1a1a1a"
-									onChange={this.handleCaseColorChange}
-								/>
+								<ColorInput color={caseColor} onColorChange={this.handleCaseColorChange} />
 							</label>
 						</InputGroup>
 
@@ -160,24 +147,24 @@ class KeycapEditor extends React.PureComponent<PropTypes, State> {
 						<InputGroup>
 							<label>
 								<Label>Background color</Label>
-								<Input
+								{/* <Input
 									type="text"
 									value={backgroundColorString}
 									onChange={this.handleBackgroundColorChange}
 									placeholder="#fff"
-								/>
+								/> */}
 								<Swatches onClick={this.handleBackgroundColorChange} />
 							</label>
 						</InputGroup>
 						<InputGroup>
 							<label>
 								<Label>Legend color</Label>
-								<Input
+								{/* <Input
 									type="text"
 									value={legendColorString}
 									placeholder="#000"
 									onChange={this.handleLegendColorChange}
-								/>
+								/> */}
 								<Swatches onClick={this.handleLegendColorChange} />
 							</label>
 						</InputGroup>
@@ -186,7 +173,7 @@ class KeycapEditor extends React.PureComponent<PropTypes, State> {
 							<label>
 								<Label>Background color</Label>
 								<Swatch
-									color={backgroundColorString}
+									color={backgroundColor}
 									height={20}
 									width={100}
 								/>

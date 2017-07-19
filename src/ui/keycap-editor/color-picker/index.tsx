@@ -11,7 +11,7 @@ const clamp = (n: number, min: number, max: number): number => (
   Math.min(Math.max(n, min), max)
 );
 
-const getCoordinatesFromColor = (color: Color): { x: number, y: number } => {
+const getCoordinatesFromColor = (color: Color.Color): { x: number, y: number } => {
   const hsl = color.hsl();
   const x = hsl.saturationl() * POINT_SIZE;
   const y = (100 - hsl.lightness()) * POINT_SIZE;
@@ -19,11 +19,11 @@ const getCoordinatesFromColor = (color: Color): { x: number, y: number } => {
   return { x, y };
 };
 
-const getHue = (color: Color | null) => color && color.hue();
+const getHue = (color: Color.Color | null) => color && color.hue();
 
 class ColorGradient extends React.Component<{
-  color: Color,
-  onColorChange: (color: string, preview?: boolean) => any,
+  color: Color.Color | null,
+  onColorChange: (color: Color.Color, preview?: boolean) => any,
 }, {
   canvas?: HTMLCanvasElement,
   isMouseDown: boolean,
@@ -48,18 +48,19 @@ class ColorGradient extends React.Component<{
     }
   }
 
-  handleCanvas = (canvas) => {
+  handleCanvas = (canvas: HTMLCanvasElement | null) => {
     this.setState(() => ({
       canvas,
     }));
 
+    if (!canvas) { return; }
     const { color } = this.props;
     this.drawGradient(canvas, color);
   };
 
-  drawGradient = (canvas: HTMLCanvasElement, color: Color) => {
+  drawGradient = (canvas: HTMLCanvasElement, color: Color.Color) => {
     const ctx = canvas.getContext('2d');
-    const hue = color.hue();
+    const hue = color.hue()
 
     for (let i=0; i < 100; i++) {
       for (let j=0; j < 100; j++) {
@@ -87,7 +88,7 @@ class ColorGradient extends React.Component<{
 
     const { color, onColorChange } = this.props;
     const hue = color.hue();
-    onColorChange(Color.hsl(hue, saturation, lightness), preview);
+    onColorChange(Color({ h: hue, s: saturation, l: lightness }), preview);
   };
 
   cleanup = () => {

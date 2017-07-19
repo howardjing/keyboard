@@ -9,6 +9,7 @@
     "bundle-production": "node fuse.js bundle-production"
   },
   "devDependencies": {
+    "@types/color": "^1.0.4",
     "@types/react": "^15.0.24",
     "@types/react-dom": "^15.5.0",
     "@types/react-redux": "^4.4.40",

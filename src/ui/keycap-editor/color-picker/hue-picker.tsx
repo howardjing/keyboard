@@ -6,7 +6,7 @@ import Pointer from './pointer';
 const DEGREES = 360;
 const HEIGHT = 12;
 
-const getXFromColor = (color: Color, width: number): number => (
+const getXFromColor = (color: Color.Color, width: number): number => (
   Math.round((color.hue() * (width - 1)) / DEGREES)
 );
 
@@ -19,19 +19,20 @@ const getHueFromX = (x: number, width: number): number => (
 );
 
 class HuePicker extends React.Component<{
-  color: Color | null,
+  color: Color.Color | null,
   width: number,
-  onColorChange: (color: string, previwe?: boolean) => any,
+  onColorChange: (color: Color.Color, preview?: boolean) => any,
 }, {
   canvas?: HTMLCanvasElement,
   isMouseDown: boolean,
 }> {
 
-  handleCanvas = (canvas) => {
+  handleCanvas = (canvas: HTMLCanvasElement | null) => {
     this.setState(() => ({
       canvas,
     }));
 
+    if (!canvas) { return; }
     const { width } = this.props;
     this.drawGradient(canvas, width);
   };
@@ -56,7 +57,7 @@ class HuePicker extends React.Component<{
     const { color, onColorChange } = this.props;
     const saturation = color.saturationl();
     const lightness = color.lightness();
-    onColorChange(Color.hsl(degrees, saturation, lightness), preview);
+    onColorChange(Color({ h: degrees, s: saturation, l: lightness }), preview);
   };
 
   cleanup = () => {

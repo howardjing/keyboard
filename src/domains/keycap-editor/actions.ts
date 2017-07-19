@@ -23,21 +23,21 @@ export interface SetActiveSection {
 const setActiveBackgroundColor =
   actionCreator<SetActiveBackgroundColor>('SET_ACTIVE_BACKGROUND_COLOR');
 export interface SetActiveBackgroundColor {
-  color: Color,
+  color: Color.Color,
   preview: boolean,
 };
 
 const setActiveLegendColor =
   actionCreator<SetActiveLegendColor>('SET_ACTIVE_LEGEND_COLOR');
 export interface SetActiveLegendColor {
-  color: Color,
+  color: Color.Color,
   preview: boolean,
 };
 
 const setCaseColor =
   actionCreator<SetCaseColor>('SET_CASE_COLOR');
 export interface SetCaseColor {
-  color: Color,
+  color: Color.Color,
   preview: boolean,
 };
 

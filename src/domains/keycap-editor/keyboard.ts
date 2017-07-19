@@ -302,7 +302,7 @@ class Keyboard extends Record({
       .concat(List.of(space));
   }
 
-  getCaseColor(): Color {
+  getCaseColor(): Color.Color {
     return this.get('caseColor');
   }
 
@@ -321,19 +321,19 @@ class Keyboard extends Record({
     })
   }
 
-  setBackgroundColors(keycaps: Set<Keycap>, color: Color): this {
+  setBackgroundColors(keycaps: Set<Keycap>, color: Color.Color): this {
     return this.setKeycaps(keycaps, (keycap) => {
       return keycap.setBackgroundColor(color)
     });
   }
 
-  setLegendColors(keycaps: Set<Keycap>, color: Color): this {
+  setLegendColors(keycaps: Set<Keycap>, color: Color.Color): this {
     return this.setKeycaps(keycaps, (keycap) =>
       keycap.setLegendColor(color)
     );
   }
 
-  setCaseColor(color: Color): this {
+  setCaseColor(color: Color.Color): this {
     return this.set('caseColor', color) as this;
   }
 }
@@ -351,8 +351,8 @@ class Keycap extends Record({
     primaryLabel: string = '',
     secondaryLabel: string = '',
     width: number = 1,
-    backgroundColor: Color | undefined = undefined,
-    legendColor: Color | undefined = undefined,
+    backgroundColor: Color.Color | undefined = undefined,
+    legendColor: Color.Color | undefined = undefined,
     convex: boolean = false,
   ): Keycap {
     const params = {
@@ -390,11 +390,11 @@ class Keycap extends Record({
     return this.get('width');
   }
 
-  getBackgroundColor(): Color {
+  getBackgroundColor(): Color.Color {
     return this.get('backgroundColor');
   }
 
-  getLegendColor(): Color {
+  getLegendColor(): Color.Color {
     return this.get('legendColor');
   }
 
@@ -402,11 +402,11 @@ class Keycap extends Record({
     return this.get('convex');
   }
 
-  setBackgroundColor(color: Color): this {
+  setBackgroundColor(color: Color.Color): this {
     return <this>this.set('backgroundColor', color);
   }
 
-  setLegendColor(color: Color): this {
+  setLegendColor(color: Color.Color): this {
     return <this>this.set('legendColor', color);
   }
 }

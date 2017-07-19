@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 class Swatch extends React.PureComponent<{
   className?: string,
-  color: string,
+  color: Color.Color,
   width?: number,
   height?: number,
   onClick?: () => any,
@@ -20,7 +20,7 @@ class Swatch extends React.PureComponent<{
         className={className}
         onClick={onClick}
         style={{
-          backgroundColor: color,
+          backgroundColor: color.rgb(),
         }}
       />
     );

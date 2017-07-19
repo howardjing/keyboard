@@ -21,12 +21,12 @@ interface PropTypes {
   keyboard: Keyboard,
   activeKeys: Set<Keycap>,
   section: Section,
-  backgroundColor: Color | null,
-  legendColor: Color | null,
-  handleSectionChange: (e: React.FormEvent<HTMLSelectElement>) => any,
-  handleBackgroundColorChange: (color: Color, preview?: boolean) => any,
-  handleLegendColorChange: (color: Color, preview?: boolean) => any,
-  handleCaseColorChange: (color: Color, preview?: boolean) => any,
+  backgroundColor: Color.Color | null,
+  legendColor: Color.Color | null,
+  handleSectionChange: (section: Section) => any,
+  handleBackgroundColorChange: (color: Color.Color, preview?: boolean) => any,
+  handleLegendColorChange: (color: Color.Color, preview?: boolean) => any,
+  handleCaseColorChange: (color: Color.Color, preview?: boolean) => any,
 }
 
 const mapStateToProps = (state) => {
@@ -45,14 +45,14 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     return setActiveSection({ section });
   },
 
-  handleCaseColorChange: (color: Color, preview: boolean = false) => {
+  handleCaseColorChange: (color: Color.Color, preview: boolean = false) => {
     return setCaseColor({ color, preview });
   },
 
-  handleBackgroundColorChange: (color: string, preview: boolean = false) =>
+  handleBackgroundColorChange: (color: Color.Color, preview: boolean = false) =>
     setActiveBackgroundColor({ color, preview }),
 
-  handleLegendColorChange: (color: string, preview: boolean = false) =>
+  handleLegendColorChange: (color: Color.Color, preview: boolean = false) =>
     setActiveLegendColor({ color, preview }),
 }, dispatch);
 

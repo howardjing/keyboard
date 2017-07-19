@@ -18,7 +18,6 @@ class Pointer extends React.PureComponent<{
       <div
         className={className}
         style={{
-          // backgroundColor: color,
           left: `${x - POINTER_SIZE / 2}px`,
           top: `${y - POINTER_SIZE / 2}px`,
         }}
