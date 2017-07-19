@@ -5,17 +5,20 @@ class Swatch extends React.PureComponent<{
   className?: string,
   color: string,
   width?: number,
-  height?: number
+  height?: number,
+  onClick?: () => any,
 }, {}> {
   render() {
     const {
       className,
       color,
+      onClick,
     } = this.props;
 
     return (
       <div
         className={className}
+        onClick={onClick}
         style={{
           backgroundColor: color,
         }}

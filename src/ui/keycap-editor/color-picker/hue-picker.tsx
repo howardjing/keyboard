@@ -19,7 +19,7 @@ const getHueFromX = (x: number, width: number): number => (
 );
 
 class HuePicker extends React.Component<{
-  color: Color,
+  color: Color | null,
   width: number,
   onColorChange: (color: string, previwe?: boolean) => any,
 }, {
@@ -97,7 +97,9 @@ class HuePicker extends React.Component<{
 
   render() {
     const { color, width } = this.props;
-    const x = getXFromColor(color, width);
+    const pointer = color ?
+       <Pointer x={getXFromColor(color, width)} y={9} /> :
+       null;
 
     return (
       <Wrapper
@@ -110,7 +112,7 @@ class HuePicker extends React.Component<{
           width={width}
           height={HEIGHT}
         />
-        <Pointer x={x} y={9} />
+        {pointer}
       </Wrapper>
     )
   }

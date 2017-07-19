@@ -40,7 +40,7 @@ class ColorGradient extends React.Component<{
     const { color: nextColor } = nextProps;
     const { color } = this.props;
 
-    if (nextColor !== color && getHue(nextColor) !== getHue(color)) {
+    if (nextColor !== color && nextColor && getHue(nextColor) !== getHue(color)) {
       const { canvas } = this.state;
       if (canvas) {
         this.drawGradient(canvas, nextColor);
@@ -126,7 +126,14 @@ class ColorGradient extends React.Component<{
 
   render() {
     const { color, onColorChange } = this.props;
-    const { x, y } = getCoordinatesFromColor(color);
+
+    let pointer;
+    if (color) {
+      const { x, y } = getCoordinatesFromColor(color);
+      pointer = <Pointer x={x} y={y} />;
+    } else {
+      pointer = null;
+    }
 
     return (
       <div>
@@ -140,10 +147,7 @@ class ColorGradient extends React.Component<{
             width={CANVAS_SIZE}
             height={CANVAS_SIZE}
           />
-          <Pointer
-            x={x}
-            y={y}
-          />
+          {pointer}
         </SLWrapper>
         <HuePicker color={color} width={CANVAS_SIZE} onColorChange={onColorChange} />
       </div>

@@ -9,9 +9,9 @@ import {
 } from '../../domains/keycap-editor/reducer';
 import KeyboardComponent from './keyboard';
 import Swatches from './swatches';
+import Swatch from './swatch';
 import Input from './_common/input';
 import { TabbedSelect, Tab } from './_common/tabbed-select';
-import Swatch from './swatches/swatch';
 import ColorPicker from './color-picker';
 
 interface PropTypes {
@@ -124,6 +124,9 @@ class KeycapEditor extends React.PureComponent<PropTypes, State> {
 
 		return (
 			<div>
+				<KeyboardComponent
+					keyboard={keyboard}
+				/>
 				<EditorWrapper>
 					<div>
 						<Editor
@@ -135,6 +138,7 @@ class KeycapEditor extends React.PureComponent<PropTypes, State> {
 						<InputGroup>
 							<label>
 								<Label>Case color</Label>
+								<Swatch color={caseColorString} />
 								<Input
 									type="text"
 									value={caseColorString}
@@ -194,10 +198,6 @@ class KeycapEditor extends React.PureComponent<PropTypes, State> {
 						</InputGroup>
 					</Form>
 				</EditorWrapper>
-				<h3>Preview</h3>
-				<KeyboardComponent
-					keyboard={keyboard}
-				/>
 			</div>
 		);
 	}
