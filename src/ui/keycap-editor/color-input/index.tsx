@@ -10,6 +10,7 @@ const WHITE = Color({ r: 255, g: 255, b: 255 });
 class ColorInput extends React.Component<{
   color: Color.Color | null,
   onColorChange: (color: Color.Color, preview?: boolean) => any,
+  children?: any,
 }, {
   open: boolean,
 }> {
@@ -31,19 +32,32 @@ class ColorInput extends React.Component<{
   };
 
   render() {
-    const { color, onColorChange } = this.props;
+    const { color, onColorChange, children } = this.props;
     const { open } = this.state;
     const swatchColor = color || WHITE;
+    const width = 30;
+    const height = 20;
 
     if (!open) {
-      return <StyledSwatch color={swatchColor} onClick={this.openPicker} />
+      return (
+      <StyledSwatch
+        color={swatchColor}
+        width={width}
+        height={height}
+        onClick={this.openPicker}
+      />);
     }
 
     return (
       <span>
-        <StyledSwatch color={swatchColor} />
+        <StyledSwatch
+          color={swatchColor}
+          width={width}
+          height={height}
+        />
         <StyledDismissible onDismiss={this.closePicker}>
           <ColorPicker color={color} onColorChange={onColorChange} />
+          {children}
         </StyledDismissible>
       </span>
     )
@@ -51,6 +65,7 @@ class ColorInput extends React.Component<{
 }
 
 const StyledDismissible = styled(Dismissible)`
+  display: flex;
   border: 1px solid black;
 `;
 

@@ -147,40 +147,17 @@ class KeycapEditor extends React.PureComponent<PropTypes, State> {
 						<InputGroup>
 							<label>
 								<Label>Background color</Label>
-								{/* <Input
-									type="text"
-									value={backgroundColorString}
-									onChange={this.handleBackgroundColorChange}
-									placeholder="#fff"
-								/> */}
-								<Swatches onClick={this.handleBackgroundColorChange} />
+								<ColorInput color={backgroundColor} onColorChange={this.handleBackgroundColorChange}>
+									<Swatches onClick={this.handleBackgroundColorChange} />
+								</ColorInput>
 							</label>
 						</InputGroup>
 						<InputGroup>
 							<label>
 								<Label>Legend color</Label>
-								{/* <Input
-									type="text"
-									value={legendColorString}
-									placeholder="#000"
-									onChange={this.handleLegendColorChange}
-								/> */}
-								<Swatches onClick={this.handleLegendColorChange} />
-							</label>
-						</InputGroup>
-
-						<InputGroup>
-							<label>
-								<Label>Background color</Label>
-								<Swatch
-									color={backgroundColor}
-									height={20}
-									width={100}
-								/>
-								<ColorPicker
-									color={backgroundColor}
-									onColorChange={handleBackgroundColorChange}
-								/>
+								<ColorInput color={legendColor} onColorChange={this.handleLegendColorChange}>
+									<Swatches onClick={this.handleLegendColorChange} />
+								</ColorInput>
 							</label>
 						</InputGroup>
 					</Form>
