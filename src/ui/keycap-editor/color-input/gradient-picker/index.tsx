@@ -21,7 +21,7 @@ const getCoordinatesFromColor = (color: Color.Color): { x: number, y: number } =
 
 const getHue = (color: Color.Color | null) => color && color.hue();
 
-class ColorGradient extends React.Component<{
+class GradientPicker extends React.Component<{
   color: Color.Color | null,
   onColorChange: (color: Color.Color, preview?: boolean) => any,
 }, {
@@ -163,4 +163,4 @@ const SLWrapper = styled.div`
   cursor: pointer;
 `;
 
-export default ColorGradient;
+export default GradientPicker;

@@ -13,7 +13,6 @@ import Swatch from './swatch';
 import Input from './_common/input';
 import ColorInput from './color-input';
 import { TabbedSelect, Tab } from './_common/tabbed-select';
-import ColorPicker from './color-picker';
 
 interface PropTypes {
 	keyboard: Keyboard,
@@ -84,19 +83,19 @@ class KeycapEditor extends React.PureComponent<PropTypes, State> {
 		}));
 	};
 
-	handleBackgroundColorChange = (color: Color.Color) => {
+	handleBackgroundColorChange = (color: Color.Color, preview?: boolean) => {
 		const { handleBackgroundColorChange } = this.props;
-		handleBackgroundColorChange(color);
+		handleBackgroundColorChange(color, preview);
 	};
 
-	handleCaseColorChange = (color: Color.Color) => {
+	handleCaseColorChange = (color: Color.Color, preview?: boolean) => {
 		const { handleCaseColorChange } = this.props;
-		handleCaseColorChange(color);
+		handleCaseColorChange(color, preview);
 	};
 
-	handleLegendColorChange = (color: Color.Color) => {
+	handleLegendColorChange = (color: Color.Color, preview?: boolean) => {
 		const { handleLegendColorChange } = this.props;
-		handleLegendColorChange(color);
+		handleLegendColorChange(color, preview);
 	};
 
 	render() {

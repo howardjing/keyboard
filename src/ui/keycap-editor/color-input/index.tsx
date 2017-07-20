@@ -2,8 +2,9 @@ import * as React from 'react';
 import * as Color from 'color';
 import styled from 'styled-components';
 import Swatch from '../swatch';
-import ColorPicker from '../color-picker';
 import Dismissible from '../_common/dismissible';
+import GradientPicker from './gradient-picker';
+import TextPicker from './text-picker';
 
 const WHITE = Color({ r: 255, g: 255, b: 255 });
 
@@ -56,8 +57,11 @@ class ColorInput extends React.Component<{
           height={height}
         />
         <StyledDismissible onDismiss={this.closePicker}>
-          <ColorPicker color={color} onColorChange={onColorChange} />
-          {children}
+          <GradientPicker color={color} onColorChange={onColorChange} />
+          <div>
+            <TextPicker color={color} onColorChange={onColorChange} />
+            {children}
+          </div>
         </StyledDismissible>
       </span>
     )
