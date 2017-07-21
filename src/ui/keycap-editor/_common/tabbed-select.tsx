@@ -30,6 +30,7 @@ const TabbedSelect = ({
 class Tab extends React.PureComponent<{
   children: any,
   value: string,
+  className?: string,
   onClick?: any,
   disabled?: boolean,
   selected?: boolean,
@@ -46,24 +47,25 @@ class Tab extends React.PureComponent<{
       children,
       disabled,
       selected,
+      className,
     } = this.props;
 
     if (selected) {
       return (
-        <SelectedTab>
+        <SelectedTab className={className}>
           {children}
         </SelectedTab>
       );
     } else if (disabled) {
       return (
-        <DisabledTab>
+        <DisabledTab className={className}>
           {children}
         </DisabledTab>
       );
     }
 
     return (
-      <UnselectedTab onClick={this.handleClick}>
+      <UnselectedTab className={className} onClick={this.handleClick}>
         {children}
       </UnselectedTab>
     );

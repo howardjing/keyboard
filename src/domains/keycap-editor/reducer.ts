@@ -81,13 +81,13 @@ class KeycapEditor extends Record({
       .getKeys(this.getActiveKeyIds()) as any;
   }
 
-  getActiveBackgroundColor(): Color | null {
+  getActiveBackgroundColor(): Color.Color | null {
     return whenConsistent(this.getActiveKeys(), (key) =>
       key.getBackgroundColor()
     );
   }
 
-  getActiveLegendColor(): Color | null {
+  getActiveLegendColor(): Color.Color | null {
     return whenConsistent(this.getActiveKeys(), (key) =>
       key.getLegendColor()
     );

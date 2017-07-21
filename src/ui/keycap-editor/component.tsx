@@ -173,6 +173,7 @@ const EditorWrapper = styled.div`
 
 const Form = styled.div`
 	max-width: 600px;
+	padding: 0 10px;
 `;
 
 const InputGroup = styled.div`
