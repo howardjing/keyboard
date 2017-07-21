@@ -19,7 +19,7 @@ const getHueFromX = (x: number, width: number): number => (
 );
 
 class HuePicker extends React.Component<{
-  color: Color.Color | null,
+  color: Color.Color,
   width: number,
   onColorChange: (color: Color.Color, preview?: boolean) => any,
 }, {

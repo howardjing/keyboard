@@ -22,7 +22,7 @@ const getCoordinatesFromColor = (color: Color.Color): { x: number, y: number } =
 const getHue = (color: Color.Color | null) => color && color.hue();
 
 class GradientPicker extends React.Component<{
-  color: Color.Color | null,
+  color: Color.Color,
   onColorChange: (color: Color.Color, preview?: boolean) => any,
 }, {
   canvas?: HTMLCanvasElement,
@@ -60,7 +60,7 @@ class GradientPicker extends React.Component<{
 
   drawGradient = (canvas: HTMLCanvasElement, color: Color.Color) => {
     const ctx = canvas.getContext('2d');
-    const hue = color.hue()
+    const hue = color.hue();
 
     for (let i=0; i < 100; i++) {
       for (let j=0; j < 100; j++) {

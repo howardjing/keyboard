@@ -57,7 +57,7 @@ class ColorInput extends React.Component<{
           height={height}
         />
         <StyledDismissible onDismiss={this.closePicker}>
-          <GradientPicker color={color} onColorChange={onColorChange} />
+          <GradientPicker color={swatchColor} onColorChange={onColorChange} />
           <div>
             <TextPicker color={color} onColorChange={onColorChange} />
             {children}
