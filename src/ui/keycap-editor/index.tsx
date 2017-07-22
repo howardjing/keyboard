@@ -9,6 +9,8 @@ import {
   setActiveBackgroundColor,
   setActiveLegendColor,
   setCaseColor,
+  selectKeycapsWithColor as _selectKeycapsWithColor,
+  shiftColor,
 } from '../../domains/keycap-editor/actions';
 import Keyboard, { Keycap } from '../../domains/keycap-editor/keyboard';
 import {
@@ -27,6 +29,8 @@ interface PropTypes {
   handleBackgroundColorChange: (color: Color.Color, preview?: boolean) => any,
   handleLegendColorChange: (color: Color.Color, preview?: boolean) => any,
   handleCaseColorChange: (color: Color.Color, preview?: boolean) => any,
+  handleShiftColor: (from: Color.Color, to: Color.Color, preview?: boolean) => any,
+  selectKeycapsWithColor: (color: Color.Color) => any,
 }
 
 const mapStateToProps = (state) => {
@@ -54,6 +58,12 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 
   handleLegendColorChange: (color: Color.Color, preview: boolean = false) =>
     setActiveLegendColor({ color, preview }),
+
+  handleShiftColor: (from: Color.Color, to: Color.Color, preview: boolean = false) =>
+    shiftColor({ from, to, preview }),
+
+  selectKeycapsWithColor: (color: Color.Color) =>
+    _selectKeycapsWithColor({ color }),
 }, dispatch);
 
 const Editor: React.SFC<PropTypes> = ({
@@ -66,6 +76,8 @@ const Editor: React.SFC<PropTypes> = ({
   handleBackgroundColorChange,
   handleLegendColorChange,
   handleCaseColorChange,
+  handleShiftColor,
+  selectKeycapsWithColor,
 }) => (
   <Component
     keyboard={keyboard}
@@ -77,6 +89,8 @@ const Editor: React.SFC<PropTypes> = ({
     handleBackgroundColorChange={handleBackgroundColorChange}
     handleLegendColorChange={handleLegendColorChange}
     handleCaseColorChange={handleCaseColorChange}
+    handleShiftColor={handleShiftColor}
+    selectKeycapsWithColor={selectKeycapsWithColor}
   />
 );
 

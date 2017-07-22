@@ -1,5 +1,3 @@
-import * as Color from 'color';
-
 import {
   ActionCreator,
   makeActionCreator,
@@ -53,6 +51,29 @@ export interface AddActiveKeycap {
   keycap: Keycap,
 };
 
+/**
+ * given a color, select all keycaps where either background or
+ * legend color matches
+ */
+const selectKeycapsWithColor =
+  actionCreator<SelectKeycapsWithColor>('SELECT_KEYCAPS_WITH_COLOR');
+export interface SelectKeycapsWithColor {
+  color: Color.Color,
+};
+
+/**
+ * given a color, change active keycaps such that if their background
+ * color matches from color, change background color. If their legend color
+ * matches from color, change legend color.
+ */
+const shiftColor =
+  actionCreator<ShiftColor>('SHIFT_COLOR');
+export interface ShiftColor {
+  from: Color.Color,
+  to: Color.Color,
+  preview: boolean,
+};
+
 const setMouseDown =
   actionCreator<SetMouseDown>('SET_MOUSE_DOWN');
 export interface SetMouseDown {
@@ -67,4 +88,6 @@ export {
   setActiveKeycap,
   addActiveKeycap,
   setMouseDown,
+  selectKeycapsWithColor,
+  shiftColor,
 };

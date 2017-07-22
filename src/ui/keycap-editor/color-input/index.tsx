@@ -6,11 +6,13 @@ import Dismissible from '../_common/dismissible';
 import GradientPicker from './gradient-picker';
 import TextPicker from './text-picker';
 
-const WHITE = Color({ r: 255, g: 255, b: 255 });
+const PLACEHOLDER_COLOR = Color('#f1f1f1');
 
 class ColorInput extends React.Component<{
   color: Color.Color | null,
   onColorChange: (color: Color.Color, preview?: boolean) => any,
+  onOpen?: () => any,
+  onClose?: () => any,
   children?: any,
 }, {
   open: boolean,
@@ -21,22 +23,34 @@ class ColorInput extends React.Component<{
   };
 
   openPicker = () => {
+    const { onOpen } = this.props;
+
     this.setState(() => ({
       open: true,
     }));
+
+    if (onOpen) {
+      onOpen();
+    }
   };
 
   closePicker = () => {
+    const { onClose } = this.props;
+
     this.setState(() => ({
       open: false,
     }));
+
+    if (onClose) {
+      onClose();
+    }
   };
 
   render() {
     const { color, onColorChange, children } = this.props;
     const { open } = this.state;
-    const swatchColor = color || WHITE;
-    const width = 30;
+    const swatchColor = color || PLACEHOLDER_COLOR;
+    const width = 60;
     const height = 20;
 
     if (!open) {

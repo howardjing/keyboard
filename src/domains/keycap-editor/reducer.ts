@@ -10,6 +10,8 @@ import {
   addActiveKeycap, AddActiveKeycap,
   setMouseDown, SetMouseDown,
   setCaseColor, SetCaseColor,
+  selectKeycapsWithColor, SelectKeycapsWithColor,
+  shiftColor, ShiftColor,
 } from './actions';
 import Keyboard, { Keycap } from './keyboard';
 import * as foo from './actions';
@@ -177,6 +179,48 @@ const handleAddActiveKeycap =
     );
   };
 
+/**
+ * TODO: not sure if necessary -- maybe can just use equality check?
+ */
+const isEqual = (a: Color.Color, b: Color.Color) =>
+  a.red() === b.red() && a.green() === b.green() && a.blue() === b.blue();
+
+const handleSelectKeycapsWithColor = (
+  state: KeycapEditor,
+  action: Action<SelectKeycapsWithColor>
+) => {
+  const { color } = action.payload;
+  const keycaps = state.getKeyboard().getKeycaps();
+  const activeKeyIds = Set().withMutations(set => {
+    keycaps.forEach(cap => {
+      if (
+        isEqual(cap.getBackgroundColor(), color) ||
+        isEqual(cap.getLegendColor(), color)
+      ) {
+        set.add(cap.getId());
+      }
+    });
+  });
+
+  return (
+    state
+      .set('activeSection', 'custom')
+      .set('activeKeyIds', activeKeyIds)
+  );
+};
+
+const handleShiftColor = (state: KeycapEditor, action: Action<ShiftColor>) => {
+  const { from, to } = action.payload;
+  const keys = state.getActiveKeys();
+  const background = keys.filter(cap => isEqual(cap.getBackgroundColor(), from)) as Set<Keycap>;
+  const legend = keys.filter(cap => isEqual(cap.getLegendColor(), from)) as Set<Keycap>;
+  return state.update('keyboard', (keyboard: Keyboard) => (
+    keyboard
+      .setBackgroundColors(background, to)
+      .setLegendColors(legend, to)
+  ));
+};
+
 const handleSetMouseDown =
   (state: KeycapEditor, action: Action<SetMouseDown>) => (
     state
@@ -190,6 +234,8 @@ export default createReducer(initialState, {
   [setActiveSection.type]: handleSetActiveSection,
   [setActiveKeycap.type]: handleSetActiveKeycap,
   [addActiveKeycap.type]: handleAddActiveKeycap,
+  [selectKeycapsWithColor.type]: handleSelectKeycapsWithColor,
+  [shiftColor.type]: handleShiftColor,
   [setMouseDown.type]: handleSetMouseDown,
 });
 

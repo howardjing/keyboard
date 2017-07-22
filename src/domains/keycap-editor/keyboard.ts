@@ -306,6 +306,23 @@ class Keyboard extends Record({
     return this.get('caseColor');
   }
 
+  getKeycaps(): List<Keycap> {
+    return this.get('keycaps').toList();
+  }
+
+  getPallet(): List<Color.Color> {
+    const keys = this.getKeycaps();
+
+    return (Map() as Map<string, Color.Color>).withMutations(map => {
+      keys.forEach((key: Keycap) => {
+        const background = key.getBackgroundColor();
+        const legend = key.getLegendColor();
+        map.set(background.rgb().string(), background);
+        map.set(legend.rgb().string(), legend);
+      });
+    }).toList();
+  }
+
   private setKeycaps(keycaps: Set<Keycap>, updater: (keycap: Keycap) => Keycap): this {
     return <this>this.withMutations(keyboard => {
       keycaps.forEach(keycap => {

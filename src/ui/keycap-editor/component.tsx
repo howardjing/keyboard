@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { List, Set } from 'immutable';
 import styled from 'styled-components';
-import * as Color from 'color';
 import Editor from './editor';
 import Keyboard, { Keycap } from '../../domains/keycap-editor/keyboard';
 import {
@@ -24,6 +23,8 @@ interface PropTypes {
 	handleBackgroundColorChange: (color: Color.Color, preview?: boolean) => any,
 	handleCaseColorChange: (color: Color.Color, preview?: boolean) => any,
 	handleLegendColorChange: (color: Color.Color, preview?: boolean) => any,
+	handleShiftColor: (from: Color.Color, to: Color.Color, preview?: boolean) => any,
+	selectKeycapsWithColor: (color: Color.Color) => any,
 }
 
 interface State {
@@ -83,21 +84,6 @@ class KeycapEditor extends React.PureComponent<PropTypes, State> {
 		}));
 	};
 
-	handleBackgroundColorChange = (color: Color.Color, preview?: boolean) => {
-		const { handleBackgroundColorChange } = this.props;
-		handleBackgroundColorChange(color, preview);
-	};
-
-	handleCaseColorChange = (color: Color.Color, preview?: boolean) => {
-		const { handleCaseColorChange } = this.props;
-		handleCaseColorChange(color, preview);
-	};
-
-	handleLegendColorChange = (color: Color.Color, preview?: boolean) => {
-		const { handleLegendColorChange } = this.props;
-		handleLegendColorChange(color, preview);
-	};
-
 	render() {
 		const {
 			keyboard,
@@ -107,64 +93,101 @@ class KeycapEditor extends React.PureComponent<PropTypes, State> {
 			legendColor,
 			handleSectionChange,
 			handleBackgroundColorChange,
+			handleLegendColorChange,
+			handleShiftColor,
+			handleCaseColorChange,
+			selectKeycapsWithColor,
 		} = this.props;
 		const { tabIndex } = this.state;
 
 		const backgroundColorString = backgroundColor ? toRgb(backgroundColor) : '';
 		const legendColorString = legendColor ? toRgb(legendColor) : '';
 		const caseColor = keyboard.getCaseColor();
+		const pallet = keyboard.getPallet();
 
 		return (
-			<div>
-				<KeyboardComponent
-					keyboard={keyboard}
-				/>
-				<EditorWrapper>
-					<div>
-						<Editor
-							keyboard={keyboard}
-							activeKeys={activeKeys}
-						/>
-					</div>
-					<Form>
-						<InputGroup>
-							<label>
-								<Label>Case color</Label>
-								<ColorInput color={caseColor} onColorChange={this.handleCaseColorChange} />
-							</label>
-						</InputGroup>
+			<Wrapper>
+				<Main>
+					<KeyboardComponent
+						keyboard={keyboard}
+					/>
+					<EditorWrapper>
+						<div>
+							<Editor
+								keyboard={keyboard}
+								activeKeys={activeKeys}
+							/>
+						</div>
+						<Form>
+							<InputGroup>
+								<label>
+									<Label>Case</Label>
+									<ColorInput color={caseColor} onColorChange={handleCaseColorChange} />
+								</label>
+							</InputGroup>
 
-						<TabbedSelect
-							value={section}
-							onSelect={handleSectionChange}
-						>
-							<Tab value="base">Base</Tab>
-							<Tab value="modifiers">Modifiers</Tab>
-							<Tab value="custom" disabled>Custom</Tab>
-						</TabbedSelect>
+							<TabbedSelect
+								value={section}
+								onSelect={handleSectionChange}
+							>
+								<Tab value="base">Base</Tab>
+								<Tab value="modifiers">Modifiers</Tab>
+								<Tab value="custom" disabled>Custom</Tab>
+							</TabbedSelect>
 
-						<InputGroup>
-							<label>
-								<Label>Background color</Label>
-								<ColorInput color={backgroundColor} onColorChange={this.handleBackgroundColorChange}>
-									<Swatches onClick={this.handleBackgroundColorChange} />
-								</ColorInput>
-							</label>
-						</InputGroup>
-						<InputGroup>
-							<label>
-								<Label>Legend color</Label>
-								<ColorInput color={legendColor} onColorChange={this.handleLegendColorChange}>
-									<Swatches onClick={this.handleLegendColorChange} />
-								</ColorInput>
-							</label>
-						</InputGroup>
-					</Form>
-				</EditorWrapper>
-			</div>
+							<InputGroup>
+								<label>
+									<Label>Background</Label>
+									<ColorInput color={backgroundColor} onColorChange={handleBackgroundColorChange}>
+										<Swatches onClick={handleBackgroundColorChange} />
+									</ColorInput>
+								</label>
+							</InputGroup>
+							<InputGroup>
+								<label>
+									<Label>Legend</Label>
+									<ColorInput color={legendColor} onColorChange={handleLegendColorChange}>
+										<Swatches onClick={handleLegendColorChange} />
+									</ColorInput>
+								</label>
+							</InputGroup>
+						</Form>
+					</EditorWrapper>
+				</Main>
+				<Secondary>
+					<H3>Pallet</H3>
+					{pallet.map((color, i) => (
+						<div key={i}>
+							<ColorInput
+								color={color}
+								onOpen={() => selectKeycapsWithColor(color)}
+								onColorChange={(to, preview) => handleShiftColor(color, to, preview)}
+							>
+								<Swatches onClick={to => handleShiftColor(color, to)} />
+							</ColorInput>
+						</div>
+					))}
+				</Secondary>
+			</Wrapper>
 		);
 	}
 }
+
+const Wrapper = styled.div`
+	display: flex;
+`;
+
+const Main = styled.div`
+	flex-grow: 1;
+`;
+
+const Secondary = styled.div`
+	text-align: right;
+`;
+
+const H3 = styled.h3`
+	margin: 0 0 10px 0;
+`;
 
 const EditorWrapper = styled.div`
 	display: flex;
@@ -182,8 +205,10 @@ const InputGroup = styled.div`
 
 const Label = styled.span`
 	display: inline-block;
-	width: 140px;
+	width: 100px;
 `;
+
+
 
 export default KeycapEditor;
 
