@@ -7,12 +7,11 @@ import {
   PCFSoftShadowMap,
 } from 'three';
 import { List } from 'immutable';
-import * as Color from 'color';
 import Keyboard, { Keycap } from '../../../domains/keycap-editor/keyboard';
 import OrbitControls from './orbit-controls';
 import buildKeyboardScene from '../_common/build-keyboard-scene';
 
-const toRgb = (color: Color): string => (
+const toRgb = (color: Color.Color): string => (
   color.rgb().string()
 );
 
@@ -35,8 +34,13 @@ const setColors = (threeJsKeys: Object3D, keys: List<List<Keycap>>) => {
   })
 };
 
-const setColor = (mesh, color: Color) => {
+const setColor = (mesh, color: Color.Color) => {
   mesh.material.color.setStyle(toRgb(color));
+};
+
+type KeyboardWebGlRendererOptions = {
+  width?: number,
+  height?: number,
 };
 
 class KeyboardWebGlRenderer {
@@ -52,17 +56,21 @@ class KeyboardWebGlRenderer {
     arrows: Object3D,
   };
 
-  static build(el: HTMLCanvasElement, keyboard: Keyboard): KeyboardWebGlRenderer {
-    return new this(el, keyboard);
+  static build(
+    el: HTMLCanvasElement,
+    keyboard: Keyboard,
+    options: KeyboardWebGlRendererOptions = {}
+  ): KeyboardWebGlRenderer {
+    return new this(el, keyboard, options);
   }
 
-  constructor(el: HTMLCanvasElement, keyboard: Keyboard) {
+  constructor(el: HTMLCanvasElement, keyboard: Keyboard, options: KeyboardWebGlRendererOptions) {
     this.renderer = new WebGLRenderer({
       canvas: el,
       antialias: true,
     });
-    const width = 1200;
-    const height = 450;
+    const width = options.width || 1200;
+    const height = options.height || 450;
     this.renderer.setSize(width, height);
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = PCFSoftShadowMap;

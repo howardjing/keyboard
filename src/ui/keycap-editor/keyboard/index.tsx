@@ -2,6 +2,9 @@ import * as React from 'react';
 import KeyboardRenderer from './keyboard-webgl-renderer';
 import KeyboardModel from '../../../domains/keycap-editor/keyboard';
 
+const WIDTH = 1200;
+const HEIGHT = 450;
+
 class Keyboard extends React.PureComponent<{
   keyboard: KeyboardModel,
 }, {
@@ -11,7 +14,9 @@ class Keyboard extends React.PureComponent<{
   handleCanvas = (el: HTMLCanvasElement) => {
     const { keyboard } = this.props;
     setTimeout(() => {
-      const renderer = KeyboardRenderer.build(el, keyboard).render();
+      const renderer = KeyboardRenderer
+        .build(el, keyboard, { width: WIDTH, height: HEIGHT })
+        .render();
 
       this.setState(() => ({
         renderer,
@@ -37,7 +42,11 @@ class Keyboard extends React.PureComponent<{
   render() {
     return (
       <canvas
-        style={{ cursor: 'pointer' }}
+        style={{
+          cursor: 'pointer',
+          width: `${WIDTH}px`,
+          height: `${HEIGHT}px`,
+        }}
         ref={this.handleCanvas}
       />
     );
