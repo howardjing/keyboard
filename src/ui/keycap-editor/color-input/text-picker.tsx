@@ -26,7 +26,7 @@ class TextPicker extends React.Component<PropTypes, {
 
   setColor = (color: Color.Color | null) => {
     this.setState(() => ({
-      text: color ? color.rgb() : '',
+      text: color ? color.hex() : '',
     }));
   };
 
@@ -65,7 +65,7 @@ class TextPicker extends React.Component<PropTypes, {
       <Input
         type="text"
         value={text}
-        placeholder="rgb(255,255,255)"
+        placeholder="#ffffff"
         onChange={this.handleInputChange}
       />
     )

@@ -120,10 +120,8 @@ class KeycapEditor extends React.PureComponent<PropTypes, State> {
 						</div>
 						<Form>
 							<InputGroup>
-								<label>
-									<Label>Case</Label>
-									<ColorInput color={caseColor} onColorChange={handleCaseColorChange} />
-								</label>
+								<Label>Case</Label>
+								<ColorInput color={caseColor} onColorChange={handleCaseColorChange} />
 							</InputGroup>
 
 							<TabbedSelect
@@ -136,20 +134,16 @@ class KeycapEditor extends React.PureComponent<PropTypes, State> {
 							</TabbedSelect>
 
 							<InputGroup>
-								<label>
-									<Label>Background</Label>
-									<ColorInput color={backgroundColor} onColorChange={handleBackgroundColorChange}>
-										<Swatches onClick={handleBackgroundColorChange} />
-									</ColorInput>
-								</label>
+								<Label>Background</Label>
+								<ColorInput color={backgroundColor} onColorChange={handleBackgroundColorChange}>
+									<Swatches onClick={handleBackgroundColorChange} />
+								</ColorInput>
 							</InputGroup>
 							<InputGroup>
-								<label>
-									<Label>Legend</Label>
-									<ColorInput color={legendColor} onColorChange={handleLegendColorChange}>
-										<Swatches onClick={handleLegendColorChange} />
-									</ColorInput>
-								</label>
+								<Label>Legend</Label>
+								<ColorInput color={legendColor} onColorChange={handleLegendColorChange}>
+									<Swatches onClick={handleLegendColorChange} />
+								</ColorInput>
 							</InputGroup>
 						</Form>
 					</EditorWrapper>
@@ -199,12 +193,14 @@ const Form = styled.div`
 	padding: 0 10px;
 `;
 
-const InputGroup = styled.div`
+const InputGroup = styled.label`
+	display: flex;
 	margin: 10px;
 `;
 
 const Label = styled.span`
 	display: inline-block;
+	flex: 0 0 auto;
 	width: 100px;
 `;
 

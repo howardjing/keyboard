@@ -53,23 +53,26 @@ class ColorInput extends React.Component<{
     const width = 60;
     const height = 20;
 
-    if (!open) {
-      return (
-      <StyledSwatch
-        color={swatchColor}
-        width={width}
-        height={height}
-        onClick={this.openPicker}
-      />);
-    }
-
-    return (
-      <span>
+    const handleClick = open ? undefined : this.openPicker;
+    const swatch = (
+      <div>
         <StyledSwatch
           color={swatchColor}
           width={width}
           height={height}
+          onClick={handleClick}
         />
+        {color ? <Label>{color.hex()}</Label> : null}
+      </div>
+    );
+
+    if (!open) {
+      return swatch;
+    }
+
+    return (
+      <span>
+        {swatch}
         <StyledDismissible onDismiss={this.closePicker}>
           <GradientPicker color={swatchColor} onColorChange={onColorChange} />
           <CustomPicker>
@@ -97,6 +100,13 @@ const CustomPicker = styled.div`
 
 const StyledSwatch = styled(Swatch)`
   cursor: pointer;
+`;
+
+const Label = styled.div`
+  display: inline-block;
+  margin-left: 10px;
+  font-size: 12px;
+  width: 60px;
 `;
 
 export default ColorInput;
