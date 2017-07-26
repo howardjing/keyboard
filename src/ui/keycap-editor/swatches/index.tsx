@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as Color from 'color';
 import styled from 'styled-components';
+import * as ReactTooltip from 'react-tooltip';
 import { TabbedSelect, Tab } from '../_common/tabbed-select';
 import Swatch from '../swatch';
 import {
@@ -42,9 +43,16 @@ class Swatches extends React.PureComponent<PropTypes, {
         return (
           <Li
             key={name}
+            data-tip={name}
+            data-for={name}
             onClick={() => onClick(color)}
           >
-            <Swatch color={color} width={15} height={15} />
+            <Swatch
+              color={color}
+              width={15}
+              height={15}
+            />
+            <ReactTooltip id={name} effect="solid" />
           </Li>
         )
       })
