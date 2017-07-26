@@ -14,7 +14,8 @@ import {
 
 interface PropTypes {
   onClick: (color: Color.Color) => any,
-}
+  className?: string,
+};
 
 type Producer = 'GMK' | 'SP_ABS' | 'SP_PBT';
 
@@ -61,11 +62,11 @@ class Swatches extends React.PureComponent<PropTypes, {
   };
 
   render() {
-    const { onClick } = this.props;
+    const { onClick, className } = this.props;
     const { tab } = this.state;
 
     return (
-      <div>
+      <div className={className}>
         <List>
           <TabbedSelect
             value={tab}

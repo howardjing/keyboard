@@ -157,7 +157,7 @@ class KeycapEditor extends React.PureComponent<PropTypes, State> {
 								onOpen={() => selectKeycapsWithColor(color)}
 								onColorChange={(to, preview) => handleShiftColor(color, to, preview)}
 							>
-								<Swatches onClick={to => handleShiftColor(color, to)} />
+								<LeftAlignedSwatches onClick={to => handleShiftColor(color, to)} />
 							</ColorInput>
 						</div>
 					))}
@@ -175,8 +175,14 @@ const Main = styled.div`
 	flex-grow: 1;
 `;
 
+// TODO: be less lazy, don't just text-align: right
 const Secondary = styled.div`
 	text-align: right;
+`;
+
+// TODO: when less lazy about text-align: right, can kill this style
+const LeftAlignedSwatches = styled(Swatches)`
+	text-align: left;
 `;
 
 const H3 = styled.h3`

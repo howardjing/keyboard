@@ -71,7 +71,7 @@ class ColorInput extends React.Component<{
     }
 
     return (
-      <span>
+      <div>
         {swatch}
         <StyledDismissible onDismiss={this.closePicker}>
           <GradientPicker color={swatchColor} onColorChange={onColorChange} />
@@ -80,7 +80,7 @@ class ColorInput extends React.Component<{
             {children}
           </CustomPicker>
         </StyledDismissible>
-      </span>
+      </div>
     )
   }
 }
