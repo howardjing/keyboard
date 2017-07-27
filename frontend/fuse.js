@@ -19,10 +19,12 @@ const buildFuse = (production) => {
     plugins.push(UglifyJSPlugin());
   }
 
+  const outputDir = production ? 'dist-prod' : 'dist';
+
   return (
     FuseBox.init({
       homeDir: 'src',
-      output: 'dist/$name.js',
+      output: `${outputDir}/$name.js`,
       hash: production,
       cache: !production,
       plugins,

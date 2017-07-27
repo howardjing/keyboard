@@ -1,0 +1,9 @@
+---
+- hosts: webservers
+  remote_user: root
+
+  tasks:
+  - name: upload js
+    synchronize:
+      src: ../frontend/dist-prod/
+      dest: /var/keeb

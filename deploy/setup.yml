@@ -1,0 +1,30 @@
+---
+- hosts: webservers
+  remote_user: root
+
+  tasks:
+  - name: ensure certbot ppa
+    apt_repository:
+      repo: ppa:certbot/certbot
+      state: present
+  - name: ensure certbot
+    apt:
+      name: python-certbot-nginx
+  - name: ensure cerbot renew runs weekly
+    cron:
+      name: renew ssl
+      special_time: daily
+      job: /usr/bin/certbot renew -q
+
+  - name: ensure nginx
+    apt:
+      name: nginx-core
+      state: present
+  - name: ensure config
+    template:
+      src: nginx.conf
+      dest: /etc/nginx/sites-enabled/keeb.conf
+  - name: ensure nginx restarted
+    service:
+      name: nginx
+      state: restarted
