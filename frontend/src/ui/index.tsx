@@ -3,6 +3,7 @@ import styled, { injectGlobal } from 'styled-components';
 import {
   BrowserRouter as Router,
   Route,
+  Link,
 } from 'react-router-dom';
 import Editor from './keycap-editor';
 
@@ -17,24 +18,41 @@ const App = ({
 }) => (
   <Router>
     <div>
-      <Nav />
-      <Content>
-        <Route exact path="/" component={Editor} />
-      </Content>
+      <Nav>
+        <div><LinkHome to="/">home</LinkHome></div>
+      </Nav>
+      <Wrapper>
+        <Content>
+          <Route exact path="/" component={Editor} />
+        </Content>
+      </Wrapper>
     </div>
   </Router>
 );
 
 const Nav = styled.nav`
   box-sizing: border-box;
-  padding: 10px;
+  margin-bottom: 20px;
+  padding: 20px 10px;
   display: flex;
   align-items: center;
   height: 40px;
   border-bottom: 1px solid #eee;
 `;
 
+const LinkHome = styled(Link)`
+  color: black;
+  font-size: 18px;
+  text-decoration: none;
+`;
+
+const Wrapper = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
 const Content = styled.div`
+  max-width: 1440px;
   margin: 10px;
 `;
 

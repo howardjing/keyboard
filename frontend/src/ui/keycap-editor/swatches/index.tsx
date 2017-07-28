@@ -75,17 +75,15 @@ class Swatches extends React.PureComponent<PropTypes, {
 
     return (
       <div className={className}>
-        <List>
-          <TabbedSelect
-            value={tab}
-            onSelect={this.handleTabChange}
-          >
-            <StyledTab value="GMK">GMK</StyledTab>
-            <StyledTab value="SP_ABS">SP (ABS)</StyledTab>
-            <StyledTab value="SP_PBT">SP (PBT)</StyledTab>
-          </TabbedSelect>
-          {this.renderActivePane(tab as Producer)}
-        </List>
+        <TabbedSelect
+          value={tab}
+          onSelect={this.handleTabChange}
+        >
+          <StyledTab value="GMK">GMK</StyledTab>
+          <StyledTab value="SP_ABS">SP (ABS)</StyledTab>
+          <StyledTab value="SP_PBT">SP (PBT)</StyledTab>
+        </TabbedSelect>
+        <List>{this.renderActivePane(tab as Producer)}</List>
       </div>
     );
   }
@@ -96,6 +94,7 @@ const StyledTab = styled(Tab)`
 `;
 
 const List = styled.ul`
+  min-width: 300px;
   list-style: none;
   margin: 0;
   padding: 0;

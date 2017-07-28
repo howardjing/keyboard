@@ -55,7 +55,7 @@ class ColorInput extends React.Component<{
 
     const handleClick = open ? undefined : this.openPicker;
     const swatch = (
-      <div>
+      <Wrapper>
         <StyledSwatch
           color={swatchColor}
           width={width}
@@ -63,7 +63,7 @@ class ColorInput extends React.Component<{
           onClick={handleClick}
         />
         {color ? <Label>{color.hex()}</Label> : null}
-      </div>
+      </Wrapper>
     );
 
     if (!open) {
@@ -71,7 +71,7 @@ class ColorInput extends React.Component<{
     }
 
     return (
-      <div>
+      <Wrapper>
         {swatch}
         <StyledDismissible onDismiss={this.closePicker}>
           <GradientPicker color={swatchColor} onColorChange={onColorChange} />
@@ -80,13 +80,20 @@ class ColorInput extends React.Component<{
             {children}
           </CustomPicker>
         </StyledDismissible>
-      </div>
+      </Wrapper>
     )
   }
 }
 
+const Wrapper = styled.div`
+  position: relative;
+`;
+
 const StyledDismissible = styled(Dismissible)`
+  z-index: 1;
   display: flex;
+  position: absolute;
+  right: 0;
   margin: 10px 0;
   background-color: #f1f1f1;
   padding: 10px;
@@ -107,6 +114,7 @@ const Label = styled.div`
   margin-left: 10px;
   font-size: 12px;
   width: 60px;
+  line-height: 2;
 `;
 
 export default ColorInput;

@@ -108,48 +108,55 @@ class KeycapEditor extends React.PureComponent<PropTypes, State> {
 		return (
 			<Wrapper>
 				<Main>
-					<KeyboardComponent
-						keyboard={keyboard}
-					/>
-					<EditorWrapper>
-						<div>
-							<Editor
-								keyboard={keyboard}
-								activeKeys={activeKeys}
-							/>
-						</div>
-						<Form>
-							<InputGroup>
-								<Label>Case</Label>
-								<ColorInput color={caseColor} onColorChange={handleCaseColorChange} />
-							</InputGroup>
+					<KeyboardWrapper>
+						<Header>Preview</Header>
+						<KeyboardComponent
+							keyboard={keyboard}
+						/>
+					</KeyboardWrapper>
+					<div>
+						<Header>Editor</Header>
+						<EditorWrapper>
+							<div>
+								<Editor
+									keyboard={keyboard}
+									activeKeys={activeKeys}
+								/>
+							</div>
+							<Form>
+								<FormSection>
+									<InputGroup>
+										<Label>Case</Label>
+										<ColorInput color={caseColor} onColorChange={handleCaseColorChange} />
+									</InputGroup>
+								</FormSection>
 
-							<TabbedSelect
-								value={section}
-								onSelect={handleSectionChange}
-							>
-								<Tab value="base">Base</Tab>
-								<Tab value="modifiers">Modifiers</Tab>
-								<Tab value="custom" disabled>Custom</Tab>
-							</TabbedSelect>
-
-							<InputGroup>
-								<Label>Background</Label>
-								<ColorInput color={backgroundColor} onColorChange={handleBackgroundColorChange}>
-									<Swatches onClick={handleBackgroundColorChange} />
-								</ColorInput>
-							</InputGroup>
-							<InputGroup>
-								<Label>Legend</Label>
-								<ColorInput color={legendColor} onColorChange={handleLegendColorChange}>
-									<Swatches onClick={handleLegendColorChange} />
-								</ColorInput>
-							</InputGroup>
-						</Form>
-					</EditorWrapper>
+								<TabbedSelect
+									value={section}
+									onSelect={handleSectionChange}
+								>
+									<Tab value="base">Base</Tab>
+									<Tab value="modifiers">Modifiers</Tab>
+									<Tab value="custom" disabled>Custom</Tab>
+								</TabbedSelect>
+								<InputGroup>
+									<Label>Background</Label>
+									<ColorInput color={backgroundColor} onColorChange={handleBackgroundColorChange}>
+										<Swatches onClick={handleBackgroundColorChange} />
+									</ColorInput>
+								</InputGroup>
+								<InputGroup>
+									<Label>Legend</Label>
+									<ColorInput color={legendColor} onColorChange={handleLegendColorChange}>
+										<Swatches onClick={handleLegendColorChange} />
+									</ColorInput>
+								</InputGroup>
+							</Form>
+						</EditorWrapper>
+					</div>
 				</Main>
 				<Secondary>
-					<H3>Pallet</H3>
+					<Header>Pallet</Header>
 					{pallet.map((color, i) => (
 						<div key={i}>
 							<ColorInput
@@ -157,7 +164,7 @@ class KeycapEditor extends React.PureComponent<PropTypes, State> {
 								onOpen={() => selectKeycapsWithColor(color)}
 								onColorChange={(to, preview) => handleShiftColor(color, to, preview)}
 							>
-								<LeftAlignedSwatches onClick={to => handleShiftColor(color, to)} />
+								<Swatches onClick={to => handleShiftColor(color, to)} />
 							</ColorInput>
 						</div>
 					))}
@@ -177,31 +184,34 @@ const Main = styled.div`
 
 // TODO: be less lazy, don't just text-align: right
 const Secondary = styled.div`
-	text-align: right;
 `;
 
-// TODO: when less lazy about text-align: right, can kill this style
-const LeftAlignedSwatches = styled(Swatches)`
-	text-align: left;
-`;
-
-const H3 = styled.h3`
+const Header = styled.h3`
 	margin: 0 0 10px 0;
+`;
+
+const KeyboardWrapper = styled.div`
+	margin-bottom: 20px;s
 `;
 
 const EditorWrapper = styled.div`
 	display: flex;
 	flex-direction: row;
+	padding: 0 0 20px 0;
 `;
 
 const Form = styled.div`
 	max-width: 600px;
-	padding: 0 10px;
+	padding: 0 20px;
+`;
+
+const FormSection = styled.div`
+	margin-bottom: 20px;
 `;
 
 const InputGroup = styled.label`
 	display: flex;
-	margin: 10px;
+	margin: 5px 10px;
 `;
 
 const Label = styled.span`
