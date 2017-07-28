@@ -95,7 +95,7 @@ const StyledDismissible = styled(Dismissible)`
   position: absolute;
   right: 0;
   margin: 10px 0;
-  background-color: #f1f1f1;
+  background-color: #f9f9f9;
   padding: 10px;
 `;
 

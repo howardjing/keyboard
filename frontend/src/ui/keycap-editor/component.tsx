@@ -202,7 +202,10 @@ const EditorWrapper = styled.div`
 
 const Form = styled.div`
 	max-width: 600px;
-	padding: 0 20px;
+	margin: 0 20px;
+	background: #fffff5;
+	border-radius: 5px;
+	padding: 20px;
 `;
 
 const FormSection = styled.div`
