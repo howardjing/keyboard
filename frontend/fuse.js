@@ -10,7 +10,7 @@ const buildFuse = (production) => {
     BabelPlugin({
       config: {
         presets: ['es2015']
-      }
+      },
     }),
     JSONPlugin(),
   ];
