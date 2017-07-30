@@ -80,6 +80,7 @@ class KeyboardWebGlRenderer {
     camera.position.y = -0.5;
     camera.position.z = 7.5;
     this.controls = new OrbitControls(camera, this.renderer.domElement);
+    this.controls.enableKeys = false;
 
     const {
       scene,

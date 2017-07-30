@@ -12,6 +12,7 @@ class Keyboard extends React.PureComponent<{
 }> {
 
   handleCanvas = (el: HTMLCanvasElement) => {
+    if (!el) { return; }
     const { keyboard } = this.props;
     setTimeout(() => {
       const renderer = KeyboardRenderer

@@ -1,29 +1,29 @@
 import { Map } from 'immutable';
 import { createStore, applyMiddleware } from 'redux';
-import reducer from './root-reducer';
+import thunk from 'redux-thunk';
 import { createLogger } from 'redux-logger';
-
+import reducer from './root-reducer';
 declare var process: any;
 
 const predicate = (getState: any, action: { payload: any }): boolean => (
   !action.payload.preview
 );
 
-export default (middleware = [], initialState = Map()) => {
-  const finalizedMiddleware = process.env.NODE_ENV === 'development' ?
+export default () => {
+  const base = [thunk];
+  const middleware = process.env.NODE_ENV === 'development' ?
     // only log in development
-    middleware.concat([
+    base.concat([
       createLogger({
         predicate,
       }),
     ]) :
-    middleware;
+    base;
 
   return createStore(
     reducer,
-    initialState,
     applyMiddleware(
-      ...finalizedMiddleware
+      ...middleware
     ),
   );
 }

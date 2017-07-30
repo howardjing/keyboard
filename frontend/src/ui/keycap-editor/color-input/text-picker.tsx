@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as Color from 'color';
-import Input from '../_common/input';
+import Input from '../../_common/input';
 
 type PropTypes = {
   color: Color.Color | null,

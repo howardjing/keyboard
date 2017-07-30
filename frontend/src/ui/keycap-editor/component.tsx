@@ -9,7 +9,7 @@ import {
 import KeyboardComponent from './keyboard';
 import Swatches from './swatches';
 import Swatch from './swatch';
-import Input from './_common/input';
+import Input from '../_common/input';
 import ColorInput from './color-input';
 import { TabbedSelect, Tab } from './_common/tabbed-select';
 
@@ -197,7 +197,6 @@ const KeyboardWrapper = styled.div`
 const EditorWrapper = styled.div`
 	display: flex;
 	flex-direction: row;
-	padding: 0 0 20px 0;
 `;
 
 const Form = styled.div`
