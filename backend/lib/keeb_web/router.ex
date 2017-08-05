@@ -7,5 +7,7 @@ defmodule KeebWeb.Router do
 
   scope "/api", KeebWeb do
     pipe_through :api
+
+    resources "/health", HealthCheckController, only: [:index]
   end
 end
