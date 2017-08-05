@@ -22,7 +22,7 @@
       state: present
   - name: ensure config
     template:
-      src: nginx.conf
+      src: nginx.prod.conf
       dest: /etc/nginx/sites-enabled/keeb.conf
   - name: ensure nginx restarted
     service:
