@@ -22,10 +22,12 @@
     apt:
       name: nginx-core
       state: present
+
   - name: ensure config
     template:
       src: nginx.prod.conf
       dest: /etc/nginx/sites-enabled/keeb.conf
+
   - name: ensure nginx restarted
     service:
       name: nginx
@@ -41,3 +43,8 @@
       name: keeb
       daemon_reload: yes
       enabled: yes
+
+  - name: copy assets
+    synchronize:
+      src: ../assets/
+      dest: "{{ root_path }}/assets"

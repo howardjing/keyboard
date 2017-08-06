@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import App from './ui';
 import createStore from './domains/create-store';
 import Stripe from './api/stripe';
+import './favicon.ico';
 
 const store = createStore();
 

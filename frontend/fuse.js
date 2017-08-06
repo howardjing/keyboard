@@ -1,4 +1,4 @@
-const { WebIndexPlugin, FuseBox, EnvPlugin, BabelPlugin, UglifyJSPlugin, JSONPlugin } = require('fuse-box');
+const { WebIndexPlugin, FuseBox, EnvPlugin, BabelPlugin, UglifyJSPlugin, JSONPlugin, CopyPlugin } = require('fuse-box');
 const path = require('path');
 const express = require('express');
 
@@ -25,9 +25,10 @@ const buildFuse = ({ env }) => {
     BabelPlugin({
       config: {
         presets: ['es2015']
-      },
+      }
     }),
     JSONPlugin(),
+    CopyPlugin({ files: ['*.ico'], dest: 'assets' })
   ];
 
   if (production) {
