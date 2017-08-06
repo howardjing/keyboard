@@ -2,6 +2,6 @@ defmodule KeebWeb.HealthCheckController do
   use KeebWeb, :controller
 
   def index(conn, _params) do
-    json conn, %{status: "ok"}
+    json conn, %{ version: Mix.Project.config[:version] }
   end
 end
