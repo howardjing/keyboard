@@ -408,7 +408,8 @@ class TipJar extends React.PureComponent<PropTypes, {
           <FormWrapper>
             {form}
           </FormWrapper>
-          <p>Payments are processed by <a href="https://www.stripe.com">Stripe</a>.</p>
+          <p>Payments are processed by <a href="https://www.stripe.com" target="_blank" ref="noopener noreferrer">Stripe</a>.
+          </p>
         </div>
     )
   }
