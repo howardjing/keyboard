@@ -30,14 +30,15 @@
       name: keeb
       state: stopped
 
-  - name: start new server
-    systemd:
-      name: keeb
-      state: started
-
   - name: finalize deploy
     deploy_helper:
       path: "{{ backend_path }}"
       release: "{{ deploy_helper.new_release }}"
       state: finalize
       clean: True
+
+    # so systemd refers to the new version
+  - name: start new server
+    systemd:
+      name: keeb
+      state: started
