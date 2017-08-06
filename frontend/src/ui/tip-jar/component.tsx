@@ -1,10 +1,12 @@
 import * as React from 'react';
+import { Record } from 'immutable';
 import styled from 'styled-components';
 import * as CardIcon from 'react-icons/lib/fa/credit-card'
 import FixedAmount from './fixed-amount';
 import CustomAmount from './custom-amount';
 import Input from '../_common/input';
 import Stripe from '../../api/stripe';
+import { TipData } from '../../api/tip-jar';
 import toDollars from './to-dollars';
 
 enum TipType {
@@ -13,12 +15,50 @@ enum TipType {
 }
 
 type PropTypes = {
-  syncing: boolean,
-  setSyncing: (syncing: boolean) => any,
-  onChange: (token: stripe.Token, cents: number) => any,
+  onSubmit: (tip: TipData) => any,
 };
 
-const ZIP_ERROR = 'Please enter a zip code.';
+// TODO: this was bad idea, really easy to override errors this way
+class TipJarError extends Record({
+  server: '',
+  email: '',
+  card: '',
+  zip: '',
+}) {
+  getServer() {
+    return this.get('server');
+  }
+  setServer(server): this {
+    return this.set('server', server) as this;
+  }
+  getEmail() {
+    return this.get('email');
+  }
+  setEmail(email): this {
+    return this.set('email', email) as this;
+  }
+  getCard() {
+    return this.get('card');
+  }
+  setCard(card): this {
+    return this.set('card', card) as this;
+  }
+  getZip() {
+    return this.get('zip');
+  }
+  setZip(zip): this {
+    return this.set('zip', zip) as this;
+  }
+  hasExistingErrors() {
+    // NOTE: specifically ignore server errors
+    return !this.get('email') &&
+      !this.get('card') &&
+      !this.get('zip');
+  }
+}
+
+const BLANK_EMAIL_ERROR = 'Please enter an email.';
+const BLANK_ZIP_ERROR = 'Please enter a zip code.';
 const STRIPE_PROCESSING_ERROR = 'Error processing your card. Please try again later.';
 
 class TipJar extends React.PureComponent<PropTypes, {
@@ -27,10 +67,10 @@ class TipJar extends React.PureComponent<PropTypes, {
   tipType: TipType,
   presetAmount: number,
   customAmount: number | null,
-  name: string,
+  email: string,
   zip: string,
-  stripeError: string,
-  zipError: string,
+  errors: TipJarError,
+  finished: boolean,
 }> {
 
   state = {
@@ -39,10 +79,12 @@ class TipJar extends React.PureComponent<PropTypes, {
     presetAmount: 500,
     customAmount: null,
     tipType: TipType.Preset,
+    syncing: false,
     name: '',
+    email: '',
     zip: '',
-    stripeError: '',
-    zipError: '',
+    errors: new TipJarError(),
+    finished: false,
   };
 
   componentWillMount() {
@@ -73,8 +115,9 @@ class TipJar extends React.PureComponent<PropTypes, {
     // handle errors
     card.addEventListener('change', ({ error }) => {
       const stripeError = error ? error.message : '';
+      const { errors } = this.state;
       this.setState(() => ({
-        stripeError,
+        errors: errors.setCard(stripeError),
       }));
     });
   };
@@ -116,34 +159,54 @@ class TipJar extends React.PureComponent<PropTypes, {
   setName = (name: string) => {
     this.setState(() => ({
       name,
+    }))
+  }
+
+  setEmail = (email: string) => {
+    const emailError = email ? '' : BLANK_EMAIL_ERROR;
+    const { errors } = this.state;
+    this.setState(() => ({
+      email,
+      errors: errors.setEmail(emailError),
     }));
   };
 
   setZip = (zip: string) => {
-    const zipError = zip ? '' : ZIP_ERROR;
+    const zipError = zip ? '' : BLANK_ZIP_ERROR;
+    const { errors } = this.state;
     this.setState(() => ({
       zip,
-      zipError,
+      errors: errors.setZip(zipError),
     }));
   };
 
+  setSyncing = (syncing: boolean) => (
+    this.setState(() => ({
+      syncing,
+    }))
+  );
+
   isValid = () => {
-    const { zip, zipError, stripeError } = this.state;
+    const { zip, email, errors } = this.state;
     const valid = (
-      !this.validateAmount(this.getChosenAmount()) &&
-      !stripeError &&
-      !!zip &&
-      !zipError
+      !this.validateAmount(this.getChosenAmount()) && errors.hasExistingErrors()
     );
 
     // TODO: kinda gross calling setState from here
+    let newErrors = errors;
     if (!zip) {
-      this.setState(() => ({
-        zipError: ZIP_ERROR,
-      }));
+      newErrors = newErrors.setZip(BLANK_ZIP_ERROR);
     }
 
-    return valid;
+    if (!email) {
+      newErrors = newErrors.setEmail(BLANK_EMAIL_ERROR);
+    }
+
+    this.setState(() => ({
+      errors: newErrors,
+    }));
+
+    return valid && errors === newErrors;
   }
 
   validateAmount = (cents) => {
@@ -164,21 +227,20 @@ class TipJar extends React.PureComponent<PropTypes, {
 
   handleSubmit = (e) => {
     e.preventDefault();
-
     if (!this.isValid()) { return; }
 
-    const { onChange, setSyncing } = this.props;
-    const { stripe, card, name, zip } = this.state;
+    const { onSubmit } = this.props;
+    const { stripe, card, name, email, zip, errors } = this.state;
 
     // TODO: don't think this should happen
     if (!stripe || !card) {
       this.setState(() => ({
-        stripeError: STRIPE_PROCESSING_ERROR,
+        errors: errors.setServer(STRIPE_PROCESSING_ERROR),
       }));
       return;
     }
 
-    setSyncing(true);
+    this.setSyncing(true);
 
     stripe.createToken(card, {
       name,
@@ -186,45 +248,61 @@ class TipJar extends React.PureComponent<PropTypes, {
     }).then(({ token, error }) => {
       // clientside errors
       if (error) {
-        if (error.code === 'invalid_zip') {
-          this.setState(() => ({
-            zipError: error.message,
-          }));
-        } else {
-          this.setState(() => ({
-            stripeError: error.message,
-          }));
-        }
-
-      // we're good
+        throw error;
+      // we're good, clear errors, call backend
       } else {
-        onChange(token, this.getChosenAmount());
+        this.setState(() => ({
+          errors: new TipJarError(),
+        }));
+
+        return onSubmit({
+          token,
+          email,
+          cents: this.getChosenAmount(),
+        });
+      }
+    })
+    .then((response) => {
+      this.setSyncing(false);
+      this.setState(() => ({
+        finished: true,
+      }));
+    }).catch((error) => {
+      if (error.code === 'invalid_email') {
+        this.setState(() => ({
+          errors: errors.setEmail('Invalid email.'),
+        }));
+      } else if (error.code === 'incorrect_zip') {
+        this.setState(() => ({
+          errors: errors.setZip('Invalid zip.'),
+        }));
+      } else {
+        this.setState(() => ({
+          errors: errors.setServer(STRIPE_PROCESSING_ERROR),
+        }));
       }
 
-      setSyncing(false);
-    }).catch(() => {
-      this.setState(() => ({
-        stripeError: STRIPE_PROCESSING_ERROR,
-      }));
-
-      setSyncing(false);
+      this.setSyncing(false);
     });
   };
 
   render() {
     const {
-      syncing,
-    } = this.props;
-
-    const {
       stripe,
       tipType,
       customAmount,
       name,
+      email,
       zip,
-      stripeError,
-      zipError,
+      errors,
+      syncing,
+      finished,
     } = this.state;
+
+    const serverError = errors.getServer();
+    const stripeError = errors.getCard();
+    const zipError = errors.getZip();
+    const emailError = errors.getEmail();
 
     const cents = this.getChosenAmount();
     const isPresetTip = tipType === TipType.Preset;
@@ -233,6 +311,7 @@ class TipJar extends React.PureComponent<PropTypes, {
 
     const form = stripe ?
       <Form onSubmit={this.handleSubmit} noValidate>
+        <ErrorMessage>{serverError}</ErrorMessage>
         <Section>
           <SectionLabel>Amount</SectionLabel>
           <div>
@@ -276,6 +355,19 @@ class TipJar extends React.PureComponent<PropTypes, {
 
           <InputGroupWrapper>
             <InputGroup>
+              <Label>Email</Label>
+              <StyledInput
+                type="text"
+                placeholder="jane.doe@example.com"
+                value={email}
+                onChange={this.setEmail}
+              />
+            </InputGroup>
+            <ErrorMessage offset>{emailError}</ErrorMessage>
+          </InputGroupWrapper>
+
+          <InputGroupWrapper>
+            <InputGroup>
               <Label>Card</Label>
               <CardInputWrapper>
                 <CardInput innerRef={this.loadStripeCard} />
@@ -308,13 +400,16 @@ class TipJar extends React.PureComponent<PropTypes, {
       null;
 
     return (
-      <div>
-        <Header>Tip Jar</Header>
-        <p>Found the site useful? Give money!</p>
-        <FormWrapper>
-          {form}
-        </FormWrapper>
-      </div>
+      finished ?
+        <h1>Thanks! Now go make more keyboards!</h1> :
+        <div>
+          <Header>Tip Jar</Header>
+          <p>Found the site useful? Give money!</p>
+          <FormWrapper>
+            {form}
+          </FormWrapper>
+          <p>Payments are processed by <a href="https://www.stripe.com">Stripe</a>.</p>
+        </div>
     )
   }
 }
@@ -376,7 +471,6 @@ const CardInput = styled.div`
 `;
 
 const ErrorMessage = styled.div`
-  max-width: 320px;
   margin-left: ${({ offset }: { offset?: boolean }) => offset ? '50px' : 0 };
   color: #eb1c26;
 `;

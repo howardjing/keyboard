@@ -1,3 +1,6 @@
+/**
+ * asynchronously loads stripe js
+ */
 
 // <script src="https://js.stripe.com/v3/" async></script>
 declare var process: any;

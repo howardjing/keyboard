@@ -9,5 +9,6 @@ defmodule KeebWeb.Router do
     pipe_through :api
 
     resources "/health", HealthCheckController, only: [:index]
+    resources "/tip-jar", TipJarController, only: [:create]
   end
 end

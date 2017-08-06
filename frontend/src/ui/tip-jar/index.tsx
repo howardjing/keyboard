@@ -1,31 +1,24 @@
 import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { createTip, setSyncing as _setSyncing } from '../../domains/tip-jar/actions';
-import { isSyncing } from '../../domains/tip-jar/selectors';
+import { createTip } from '../../domains/tip-jar/actions';
+import { TipData } from '../../api/tip-jar';
 import Component from './component';
 
-const mapStateToProps = (state) => ({
-  syncing: isSyncing(state),
-});
-
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  setSyncing: (syncing: boolean) => _setSyncing({ syncing }),
-  onChange: createTip,
+  onSubmit: createTip,
 }, dispatch);
 
 type PropTypes = {
   syncing: boolean,
   setSyncing: (syncing: boolean) => any,
-  onChange: (token: stripe.Token, cents: number) => any,
+  onSubmit: (tip: TipData) => any,
 };
 
 const TipJar = ({
-  syncing,
-  setSyncing,
-  onChange,
+  onSubmit,
 }: PropTypes) => (
-  <Component syncing={syncing} setSyncing={setSyncing} onChange={onChange} />
+  <Component onSubmit={onSubmit} />
 );
 
-export default connect(mapStateToProps, mapDispatchToProps)(TipJar);
+export default connect(undefined, mapDispatchToProps)(TipJar);
