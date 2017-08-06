@@ -164,6 +164,81 @@ const toIds = (section: List<List<Keycap>>): List<List<number>> => (
   )
 );
 
+const getModifiers = (
+  contextual: List<List<Keycap>>,
+  alphanumeric: List<List<Keycap>>,
+  _navigation: List<List<Keycap>>,
+  _arrows: List<List<Keycap>>
+): List<Keycap> => {
+  const esc = contextual.get(0);
+  const f5ToF9 = contextual.get(2);
+  const print = contextual.get(4);
+
+  const navigation = _navigation.flatMap(identity);
+  const arrows = _arrows.flatMap(identity);
+
+  const backspace = alphanumeric.get(0).last();
+  const tab = alphanumeric.get(1).first();
+  const capslock = alphanumeric.get(2).first();
+  const enter = alphanumeric.get(2).last();
+  const leftShift = alphanumeric.get(3).first();
+  const rightShift = alphanumeric.get(3).last();
+
+  const leftMods = alphanumeric.get(4).take(3);
+  const rightMods = alphanumeric.get(4).skip(4);
+
+  return <List<Keycap>>esc
+    .concat(f5ToF9)
+    .concat(print)
+    .concat(navigation)
+    .concat(arrows)
+    .concat(List.of(
+      backspace,
+      tab,
+      capslock,
+      enter,
+      leftShift,
+      rightShift,
+    ))
+    .concat(leftMods)
+    .concat(rightMods);
+};
+
+const getBase = (
+  contextual: List<List<Keycap>>,
+  alphanumeric: List<List<Keycap>>,
+): List<Keycap> => {
+  const f1ToF4 = contextual.get(1);
+  const f9Tof12 = contextual.get(3);
+
+  const numbers = alphanumeric.get(0).skipLast(1);
+  const qwerty = alphanumeric.get(1).skip(1);
+  const asdf = alphanumeric.get(2).skip(1).skipLast(1);
+  const zxcv = alphanumeric.get(3).skip(1).skipLast(1);
+
+  const space = alphanumeric.get(4).get(3);
+
+  return <List<Keycap>>numbers
+    .concat(f1ToF4)
+    .concat(f9Tof12)
+    .concat(qwerty)
+    .concat(asdf)
+    .concat(zxcv)
+    .concat(List.of(space));
+};
+
+const addColor = (
+  keycaps: List<Keycap>,
+  background: Color.Color,
+  legend: Color.Color = Color('#000')
+): List<Keycap> => (
+  keycaps.map(keycap => (
+    keycap
+      .setBackgroundColor(background)
+      .setLegendColor(legend)
+  )) as List<Keycap>
+);
+
 class Keyboard extends Record({
   contextual: section(),
   alphanumeric: section(),
@@ -178,10 +253,12 @@ class Keyboard extends Record({
     const navigation = instantiateSection(NAVIGATION);
     const arrows = instantiateSection(ARROWS);
 
-    const keycaps = <List<Keycap>>contextual.flatMap(identity)
-      .concat(alphanumeric.flatMap(identity))
-      .concat(navigation.flatMap(identity))
-      .concat(arrows.flatMap(identity));
+    const baseKeys = getBase(contextual, alphanumeric);
+    const modifierKeys = getModifiers(contextual, alphanumeric, navigation, arrows);
+
+    // add colors
+    const keycaps = addColor(baseKeys, Color('#ACA693'))
+      .concat(addColor(modifierKeys, Color('#67635B')));
 
     const keycapIds = <List<number>>keycaps.map((keycap) => keycap.getId());
     const keycapMapping = Map(keycapIds.zip(keycaps));
@@ -242,64 +319,19 @@ class Keyboard extends Record({
   }
 
   getModifiers(): List<Keycap> {
-    const contextual = this.getContextual();
-    const esc = contextual.get(0);
-    const f5ToF9 = contextual.get(2);
-    const print = contextual.get(4);
-
-    const navigation = this.getNavigation().flatMap(identity);
-    const arrows = this.getArrows().flatMap(identity);
-
-    const alphanumeric = this.getAlphanumeric();
-
-    const backspace = alphanumeric.get(0).last();
-    const tab = alphanumeric.get(1).first();
-    const capslock = alphanumeric.get(2).first();
-    const enter = alphanumeric.get(2).last();
-    const leftShift = alphanumeric.get(3).first();
-    const rightShift = alphanumeric.get(3).last();
-
-    const leftMods = alphanumeric.get(4).take(3);
-    const rightMods = alphanumeric.get(4).skip(4);
-
-    return <List<Keycap>>esc
-      .concat(f5ToF9)
-      .concat(print)
-      .concat(navigation)
-      .concat(arrows)
-      .concat(List.of(
-        backspace,
-        tab,
-        capslock,
-        enter,
-        leftShift,
-        rightShift,
-      ))
-      .concat(leftMods)
-      .concat(rightMods);
+    return getModifiers(
+      this.getContextual(),
+      this.getAlphanumeric(),
+      this.getNavigation(),
+      this.getArrows(),
+    );
   }
 
   getBase(): List<Keycap> {
-    const contextual = this.getContextual();
-    const f1ToF4 = contextual.get(1);
-    const f9Tof12 = contextual.get(3);
-
-    const alphanumeric = this.getAlphanumeric();
-
-    const numbers = alphanumeric.get(0).skipLast(1);
-    const qwerty = alphanumeric.get(1).skip(1);
-    const asdf = alphanumeric.get(2).skip(1).skipLast(1);
-    const zxcv = alphanumeric.get(3).skip(1).skipLast(1);
-
-    const space = alphanumeric.get(4).get(3);
-
-    return <List<Keycap>>numbers
-      .concat(f1ToF4)
-      .concat(f9Tof12)
-      .concat(qwerty)
-      .concat(asdf)
-      .concat(zxcv)
-      .concat(List.of(space));
+    return getBase(
+      this.getContextual(),
+      this.getAlphanumeric(),
+    );
   }
 
   getCaseColor(): Color.Color {
@@ -354,6 +386,7 @@ class Keyboard extends Record({
     return this.set('caseColor', color) as this;
   }
 }
+
 
 class Keycap extends Record({
   id,
