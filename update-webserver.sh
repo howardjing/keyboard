@@ -1,4 +1,7 @@
 #!/bin/bash
+
+# sets up webserver with dependencies
+
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ANSIBLE_DIR=$DIR/deploy
 

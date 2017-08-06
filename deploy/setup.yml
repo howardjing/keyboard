@@ -1,6 +1,8 @@
 ---
 - hosts: webservers
   remote_user: root
+  roles:
+  - webservers
 
   tasks:
   - name: ensure certbot ppa
@@ -28,3 +30,14 @@
     service:
       name: nginx
       state: restarted
+
+  - name: install backend systemd script
+    template:
+      src: backend.service
+      dest: /etc/systemd/system/keeb.service
+
+  - name: reload service
+    systemd:
+      name: keeb
+      daemon_reload: yes
+      enabled: yes

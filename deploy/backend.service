@@ -1,0 +1,19 @@
+[Unit]
+Description=Keeb backend
+After=network.target
+
+[Service]
+Type=forking
+User=root
+WorkingDirectory={{ backend_path }}/current
+ExecStart={{ backend_path }}/current/bin/keeb start
+ExecStop={{ backend_path }}/current/bin/keeb stop
+Restart=on-failure
+RestartSec=5
+Environment=PORT=4000
+Environment=LANG=en_US.UTF-8
+SyslogIdentifier=keeb
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

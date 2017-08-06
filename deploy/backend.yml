@@ -7,7 +7,7 @@
   tasks:
   - name: initialize deploy root
     deploy_helper:
-      path: "{{ frontend_path }}"
+      path: "{{ backend_path }}"
       state: present
 
   - name: ensure release present
@@ -21,13 +21,23 @@
       state: touch
 
   - name: upload assets
-    synchronize:
-      src: ../frontend/dist-prod/
+    unarchive:
+      src: ../backend/_build/prod/rel/keeb/releases/{{ backend_version }}/keeb.tar.gz
       dest: "{{ deploy_helper.new_release_path }}"
+
+  - name: stop existing server
+    systemd:
+      name: keeb
+      state: stopped
+
+  - name: start new server
+    systemd:
+      name: keeb
+      state: started
 
   - name: finalize deploy
     deploy_helper:
-      path: "{{ frontend_path }}"
+      path: "{{ backend_path }}"
       release: "{{ deploy_helper.new_release }}"
       state: finalize
       clean: True

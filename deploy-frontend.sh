@@ -1,4 +1,7 @@
 #!/bin/bash
+
+# deploy frontend application
+
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ANSIBLE_DIR=$DIR/deploy
 CODE_DIR=$DIR/frontend
