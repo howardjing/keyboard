@@ -239,6 +239,28 @@ const addColor = (
   )) as List<Keycap>
 );
 
+type KeycapColor = {
+  background: Color.Color,
+  legend: Color.Color,
+};
+
+const overrideColors = (
+  keycaps: List<Keycap>,
+  overrides: Map<string, KeycapColor>,
+): List<Keycap> => (
+  keycaps.map(keycap => {
+    const override = overrides.get(keycap.getType());
+
+    if (override) {
+      return keycap
+        .setBackgroundColor(override.background)
+        .setLegendColor(override.legend);
+    }
+
+    return keycap;
+  }) as List<Keycap>
+);
+
 class Keyboard extends Record({
   contextual: section(),
   alphanumeric: section(),
@@ -247,7 +269,25 @@ class Keyboard extends Record({
   keycaps: Map(),
   caseColor: Color('#2d2d2d'),
 }) {
-  static build(): Keyboard {
+  static build({
+    baseColor,
+    modifierColor,
+    overrides,
+  }: {
+    baseColor: KeycapColor,
+    modifierColor: KeycapColor,
+    overrides: Map<string, KeycapColor>,
+  } = {
+    baseColor: {
+      background: Color('#393B3B'),
+      legend: Color('#fff'),
+    },
+    modifierColor: {
+      background: Color('#393B3B'),
+      legend: Color('#fff'),
+    },
+    overrides: Map(),
+  }): Keyboard {
     const contextual = instantiateSection(CONTEXTUAL);
     const alphanumeric = instantiateSection(ALPHANUMERIC);
     const navigation = instantiateSection(NAVIGATION);
@@ -256,9 +296,12 @@ class Keyboard extends Record({
     const baseKeys = getBase(contextual, alphanumeric);
     const modifierKeys = getModifiers(contextual, alphanumeric, navigation, arrows);
 
-    // add colors
-    const keycaps = addColor(baseKeys, Color('#ACA693'))
-      .concat(addColor(modifierKeys, Color('#67635B')));
+    const keycaps = overrideColors(
+      addColor(baseKeys, baseColor.background, baseColor.legend).concat(
+        addColor(modifierKeys, modifierColor.background, modifierColor.legend)
+      ) as List<Keycap>,
+      overrides,
+    );
 
     const keycapIds = <List<number>>keycaps.map((keycap) => keycap.getId());
     const keycapMapping = Map(keycapIds.zip(keycaps));
@@ -431,6 +474,10 @@ class Keycap extends Record({
     return this.get('id');
   }
 
+  getType(): string {
+    return this.get('type');
+  }
+
   getPrimaryLabel(): string {
     return this.get('primaryLabel');
   }
@@ -465,4 +512,4 @@ class Keycap extends Record({
 }
 
 export default Keyboard;
-export { Keycap };
+export { Keycap, KeycapColor };

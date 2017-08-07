@@ -1,4 +1,4 @@
-import { Record, List, Collection, Set} from 'immutable';
+import { Record, List, Collection, Set, Map } from 'immutable';
 import { createReducer } from 'redux-immutablejs';
 import * as Color from 'color';
 import { Action } from '../../domains/actions';
@@ -37,22 +37,37 @@ const isSection = (x: any): x is Section => {
 }
 
 class KeycapEditor extends Record({
-  keyboard: Keyboard.build(),
-  activeSection: 'custom',
+  keyboard: null,
+  activeSection: 'base',
   activeKeyIds: Set(),
   mouseDown: false,
   showRenderModal: false,
 }) {
   static build(): KeycapEditor {
-    const keyboard = Keyboard.build();
+    const keyboard = Keyboard.build({
+      baseColor: {
+        background: Color('#ACA693'),
+        legend: Color('#171718'),
+      },
+      modifierColor: {
+        background: Color('#67635B'),
+        legend: Color('#171718'),
+      },
+      overrides: Map({
+        ESC: {
+          background: Color('#8D242F'),
+          legend: Color('#171718'),
+        }
+      })
+    });
     const activeKeyIds = keyboard
-      .getModifiers()
+      .getBase()
       .map(keycap => keycap.getId())
       .toSet();
 
     return new this({
       keyboard,
-      activeSection: 'modifiers',
+      activeSection: 'base',
       activeKeyIds,
     })
   }
