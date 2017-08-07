@@ -57,7 +57,7 @@ class KeycapEditor extends Record({
         ESC: {
           background: Color('#8D242F'),
           legend: Color('#171718'),
-        }
+        },
       })
     });
     const activeKeyIds = keyboard

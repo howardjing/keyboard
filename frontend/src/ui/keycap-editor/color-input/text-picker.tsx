@@ -40,13 +40,23 @@ class TextPicker extends React.Component<PropTypes, {
       return;
     }
 
+    // HACK: input isn't great if you manually enter a hex code,
+    // let's make it so that we don't even attempt to convert to a color
+    // if you're under 7 characters
+    if (string.startsWith('#') && string.length < 7) {
+      this.setState(() => ({
+        text: string,
+      }))
+      return;
+    }
+
     try {
       const color = Color(string);
       const { onColorChange } = this.props;
 
       // update local color
       this.setState(() => ({
-        text: color.rgb(),
+        text: color.hex(),
       }));
 
       // let world know about new color
