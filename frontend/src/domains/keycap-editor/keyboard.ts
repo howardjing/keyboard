@@ -261,6 +261,77 @@ const overrideColors = (
   }) as List<Keycap>
 );
 
+const keycapColorToString = (keycapColor: KeycapColor): string => (
+  `${keycapColor.background.hex()},${keycapColor.legend.hex()}`
+);
+
+const stringToKeycapColor = (string: string): KeycapColor => {
+  const [ background, legend ] = string.split(',');
+  return {
+    background: Color(background),
+    legend: Color(legend),
+  };
+};
+
+const mostCommonColor = (keycaps: List<Keycap>): KeycapColor => {
+  const { maxKeycapColor } = keycaps.reduce(({
+      maxKeycapColor,
+      maxCount,
+      mapping,
+    }, keycap) => {
+
+    const keycapColor = {
+      background: keycap.getBackgroundColor(),
+      legend: keycap.getLegendColor(),
+    };
+
+    const key = keycapColorToString(keycapColor);
+    const updatedMapping = mapping.update(key, 0, count => count += 1);
+    const updatedCount = updatedMapping.get(key);
+
+    if (updatedCount >= maxCount) {
+      return {
+        maxKeycapColor: keycapColor,
+        maxCount: updatedCount,
+        mapping: updatedMapping,
+      }
+    }
+
+    return {
+      maxKeycapColor,
+      maxCount,
+      mapping: updatedMapping,
+    }
+  }, {
+    // local maxima
+    maxKeycapColor: null,
+    maxCount: 0,
+
+    // mapping of colors -> timesSeen
+    mapping: Map() as Map<string, number>,
+  });
+
+  return maxKeycapColor;
+};
+
+
+const findOverrides = (keycaps: List<Keycap>, keycapColor: KeycapColor): Map<string, KeycapColor> => {
+  const ignore = keycapColorToString(keycapColor);
+
+  return keycaps.reduce((mapping, keycap) => {
+    const keycapColor = {
+      background: keycap.getBackgroundColor(),
+      legend: keycap.getLegendColor(),
+    };
+
+    if (keycapColorToString(keycapColor) === ignore) {
+      return mapping;
+    }
+
+    return mapping.set(keycap.getType(), keycapColor);
+  }, Map());
+};
+
 class Keyboard extends Record({
   contextual: section(),
   alphanumeric: section(),
@@ -313,6 +384,26 @@ class Keyboard extends Record({
       arrows: toIds(arrows),
       keycaps: keycapMapping,
     });
+  }
+
+  getColors(): {
+    baseColor: KeycapColor,
+    modifierColor: KeycapColor,
+    overrides: Map<string, KeycapColor>,
+  } {
+    const base = this.getBase();
+    const modifiers = this.getModifiers();
+
+    const baseColor = mostCommonColor(base);
+    const modifierColor = mostCommonColor(modifiers);
+    const baseOverrides = findOverrides(base, baseColor);
+    const modifierOverrides = findOverrides(modifiers, modifierColor);
+
+    return {
+      baseColor,
+      modifierColor,
+      overrides: baseOverrides.merge(modifierOverrides),
+    };
   }
 
   private getKey(keyId: number): Keycap | null {
