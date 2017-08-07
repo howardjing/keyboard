@@ -2,7 +2,7 @@ import * as React from 'react';
 import { List, Set } from 'immutable';
 import styled from 'styled-components';
 import Editor from './editor';
-import Keyboard, { Keycap } from '../../domains/keycap-editor/keyboard';
+import Keyboard, { Keycap, KeycapColor } from '../../domains/keycap-editor/keyboard';
 import {
 	Section,
 } from '../../domains/keycap-editor/reducer';
@@ -11,7 +11,34 @@ import Swatches from './swatches';
 import Swatch from './swatch';
 import Input from '../_common/input';
 import ColorInput from './color-input';
+import ShareInput from './share-input';
 import { TabbedSelect, Tab } from './_common/tabbed-select';
+
+declare var process: any;
+const ROOT_URL = process.env.CONFIG.ROOT_URL;
+
+const toColor = (color: KeycapColor) => ({
+	background: color.background.hex(),
+	legend: color.background.hex(),
+});
+
+const buildShareUrl = (keyboard: Keyboard): string => {
+	const {
+		baseColor,
+		modifierColor,
+		overrides,
+	} = keyboard.getColors();
+
+	// replace colors with hex representations
+	const pojo = {
+		baseColor: toColor(baseColor),
+		modifierColor: toColor(modifierColor),
+		overrides: overrides.map(toColor).toJS(),
+	};
+
+	const colors = JSON.stringify(pojo);
+	return `${ROOT_URL}?colors=${colors}`;
+}
 
 interface PropTypes {
 	keyboard: Keyboard,
@@ -104,6 +131,7 @@ class KeycapEditor extends React.PureComponent<PropTypes, State> {
 		const legendColorString = legendColor ? toRgb(legendColor) : '';
 		const caseColor = keyboard.getCaseColor();
 		const pallet = keyboard.getPallet();
+		const shareUrl = buildShareUrl(keyboard);
 
 		return (
 			<Wrapper>
@@ -156,19 +184,25 @@ class KeycapEditor extends React.PureComponent<PropTypes, State> {
 					</div>
 				</Main>
 				<Secondary>
+					<div>
+						<Header>Share</Header>
+						<StyledShare url={shareUrl} />
+					</div>
+					<div>
 					<Header>Pallet</Header>
-					{pallet.map((color, i) => (
-						<div key={i}>
-							<ColorInput
-								color={color}
-								onOpen={() => selectKeycapsWithColor(color)}
-								onColorChange={(to, preview) => handleShiftColor(color, to, preview)}
-							>
-								<Swatches onClick={to => handleShiftColor(color, to)} />
-							</ColorInput>
-						</div>
-					))}
-				</Secondary>
+						{pallet.map((color, i) => (
+							<div key={i}>
+								<ColorInput
+									color={color}
+									onOpen={() => selectKeycapsWithColor(color)}
+									onColorChange={(to, preview) => handleShiftColor(color, to, preview)}
+								>
+									<Swatches onClick={to => handleShiftColor(color, to)} />
+								</ColorInput>
+							</div>
+						))}
+					</div>
+			</Secondary>
 			</Wrapper>
 		);
 	}
@@ -222,7 +256,9 @@ const Label = styled.span`
 	width: 100px;
 `;
 
-
+const StyledShare = styled(ShareInput)`
+	margin-bottom: 20px;
+`;
 
 export default KeycapEditor;
 
