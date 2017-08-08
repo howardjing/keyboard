@@ -1,8 +1,10 @@
 import * as React from 'react';
+import * as Color from 'color';
 import { List, Set } from 'immutable';
 import styled from 'styled-components';
 import Editor from './editor';
 import Keyboard, { Keycap, KeycapColor } from '../../domains/keycap-editor/keyboard';
+import { buildShareUrl } from '../../domains/keycap-editor/sharing';
 import {
 	Section,
 } from '../../domains/keycap-editor/reducer';
@@ -13,32 +15,6 @@ import Input from '../_common/input';
 import ColorInput from './color-input';
 import ShareInput from './share-input';
 import { TabbedSelect, Tab } from './_common/tabbed-select';
-
-declare var process: any;
-const ROOT_URL = process.env.CONFIG.ROOT_URL;
-
-const toColor = (color: KeycapColor) => ({
-	background: color.background.hex(),
-	legend: color.background.hex(),
-});
-
-const buildShareUrl = (keyboard: Keyboard): string => {
-	const {
-		baseColor,
-		modifierColor,
-		overrides,
-	} = keyboard.getColors();
-
-	// replace colors with hex representations
-	const pojo = {
-		baseColor: toColor(baseColor),
-		modifierColor: toColor(modifierColor),
-		overrides: overrides.map(toColor).toJS(),
-	};
-
-	const colors = JSON.stringify(pojo);
-	return `${ROOT_URL}?colors=${colors}`;
-}
 
 interface PropTypes {
 	keyboard: Keyboard,

@@ -1,8 +1,8 @@
 import { Record, List, Collection, Set, Map } from 'immutable';
 import { createReducer } from 'redux-immutablejs';
-import * as Color from 'color';
 import { Action } from '../../domains/actions';
 import {
+  buildEditor, BuildEditor,
   setActiveSection, SetActiveSection,
   setActiveBackgroundColor, SetActiveBackgroundColor,
   setActiveLegendColor, SetActiveLegendColor,
@@ -13,7 +13,7 @@ import {
   selectKeycapsWithColor, SelectKeycapsWithColor,
   shiftColor, ShiftColor,
 } from './actions';
-import Keyboard, { Keycap } from './keyboard';
+import Keyboard, { Keycap, KeycapColor } from './keyboard';
 import * as foo from './actions';
 
 const whenConsistent = <T, K>(
@@ -31,7 +31,16 @@ const whenConsistent = <T, K>(
   return null;
 }
 
+type EditorConfig = {
+  colors: {
+    base: KeycapColor,
+    modifier: KeycapColor,
+    overrides: Map<string, KeycapColor>,
+  }
+};
+
 type Section = 'base' | 'modifiers' | 'custom';
+
 const isSection = (x: any): x is Section => {
   return x === 'base' || x === 'modifiers' || x === 'custom';
 }
@@ -43,23 +52,9 @@ class KeycapEditor extends Record({
   mouseDown: false,
   showRenderModal: false,
 }) {
-  static build(): KeycapEditor {
-    const keyboard = Keyboard.build({
-      baseColor: {
-        background: Color('#ACA693'),
-        legend: Color('#171718'),
-      },
-      modifierColor: {
-        background: Color('#67635B'),
-        legend: Color('#171718'),
-      },
-      overrides: Map({
-        ESC: {
-          background: Color('#8D242F'),
-          legend: Color('#171718'),
-        },
-      })
-    });
+  static build(config?: EditorConfig): KeycapEditor {
+    const colors = config ? config.colors : undefined;
+    const keyboard = Keyboard.build(colors);
     const activeKeyIds = keyboard
       .getBase()
       .map(keycap => keycap.getId())
@@ -69,7 +64,7 @@ class KeycapEditor extends Record({
       keyboard,
       activeSection: 'base',
       activeKeyIds,
-    })
+    });
   }
 
   getBase(): string {
@@ -119,7 +114,9 @@ class KeycapEditor extends Record({
   }
 }
 
-const initialState = KeycapEditor.build();
+const handleBuildEditor = (state: KeycapEditor, action: Action<BuildEditor>): KeycapEditor => (
+  KeycapEditor.build(action.payload.config)
+);
 
 const handleSetActiveBackgroundColor =
   (state: KeycapEditor, action: Action<SetActiveBackgroundColor>) => (
@@ -242,7 +239,10 @@ const handleSetMouseDown =
       .set('mouseDown', action.payload.mouseDown)
   );
 
+const initialState = KeycapEditor.build();
+
 export default createReducer(initialState, {
+  [buildEditor.type]: handleBuildEditor,
   [setActiveBackgroundColor.type]: handleSetActiveBackgroundColor,
   [setActiveLegendColor.type]: handleSetActiveLegendColor,
   [setCaseColor.type]: handleSetCaseColor,
@@ -256,6 +256,7 @@ export default createReducer(initialState, {
 
 export {
   KeycapEditor,
+  EditorConfig,
   Section,
   isSection
 };

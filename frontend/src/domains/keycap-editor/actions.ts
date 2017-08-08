@@ -4,7 +4,8 @@ import {
 } from '../../domains/actions';
 
 import {
-  Section
+  Section,
+  EditorConfig,
 } from './reducer';
 
 import {
@@ -12,6 +13,11 @@ import {
 } from './keyboard';
 
 const actionCreator = makeActionCreator('keycap-editor');
+
+const buildEditor = actionCreator<BuildEditor>('BUILD_EDITOR');
+export interface BuildEditor {
+  config: EditorConfig,
+};
 
 const setActiveSection = actionCreator<SetActiveSection>('SET_ACTIVE_SECTION');
 export interface SetActiveSection {
@@ -81,6 +87,7 @@ export interface SetMouseDown {
 };
 
 export {
+  buildEditor,
   setActiveSection,
   setActiveBackgroundColor,
   setActiveLegendColor,

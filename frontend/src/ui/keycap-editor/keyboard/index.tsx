@@ -5,11 +5,15 @@ import KeyboardModel from '../../../domains/keycap-editor/keyboard';
 const WIDTH = 1200;
 const HEIGHT = 450;
 
-class Keyboard extends React.PureComponent<{
+class Keyboard extends React.Component<{
   keyboard: KeyboardModel,
-}, {
-  renderer: KeyboardRenderer,
-}> {
+}, {}> {
+
+  resolve: any;
+
+  renderer: Promise<KeyboardRenderer> = new Promise((resolve) => {
+    this.resolve = resolve;
+  }) as Promise<KeyboardRenderer>;
 
   handleCanvas = (el: HTMLCanvasElement) => {
     if (!el) { return; }
@@ -18,26 +22,19 @@ class Keyboard extends React.PureComponent<{
       const renderer = KeyboardRenderer
         .build(el, keyboard, { width: WIDTH, height: HEIGHT })
         .render();
-
-      this.setState(() => ({
-        renderer,
-      }));
+      this.resolve(renderer);
     }, 0);
   };
 
   componentWillReceiveProps({ keyboard }) {
     const { keyboard: oldKeyboard } = this.props;
     if (keyboard !== oldKeyboard) {
-      const { renderer } = this.state;
-      setTimeout(() => {
-        renderer.setKeyboard(keyboard);
-      }, 0);
+      this.renderer.then(renderer => renderer.setKeyboard(keyboard));
     }
   }
 
   componentWillUnmount() {
-    const { renderer } = this.state;
-    renderer.cleanup();
+    this.renderer.then(renderer => renderer.cleanup());
   }
 
   render() {

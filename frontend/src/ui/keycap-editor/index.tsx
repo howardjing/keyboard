@@ -1,97 +1,61 @@
 import * as React from 'react';
-import { List, Set } from 'immutable';
+import { Map } from 'immutable';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as Color from 'color';
+import { KeycapEditor, EditorConfig } from '../../domains/keycap-editor/reducer';
+import { buildEditor as _buildEditor } from '../../domains/keycap-editor/actions';
+import { extractColors } from '../../domains/keycap-editor/sharing';
 import { getEditor } from '../../domains/keycap-editor/selectors';
-import {
-  setActiveSection,
-  setActiveBackgroundColor,
-  setActiveLegendColor,
-  setCaseColor,
-  selectKeycapsWithColor as _selectKeycapsWithColor,
-  shiftColor,
-} from '../../domains/keycap-editor/actions';
-import Keyboard, { Keycap } from '../../domains/keycap-editor/keyboard';
-import {
-  Section,
-  isSection,
-} from '../../domains/keycap-editor/reducer';
-import Component from './component';
+import Container from './container';
 
-interface PropTypes {
-  keyboard: Keyboard,
-  activeKeys: Set<Keycap>,
-  section: Section,
-  backgroundColor: Color.Color | null,
-  legendColor: Color.Color | null,
-  handleSectionChange: (section: Section) => any,
-  handleBackgroundColorChange: (color: Color.Color, preview?: boolean) => any,
-  handleLegendColorChange: (color: Color.Color, preview?: boolean) => any,
-  handleCaseColorChange: (color: Color.Color, preview?: boolean) => any,
-  handleShiftColor: (from: Color.Color, to: Color.Color, preview?: boolean) => any,
-  selectKeycapsWithColor: (color: Color.Color) => any,
-}
-
-const mapStateToProps = (state) => {
-  const editor = getEditor(state);
-  return {
-    keyboard: editor.getKeyboard(),
-    activeKeys: editor.getActiveKeys(),
-    section: editor.getActiveSection(),
-    backgroundColor: editor.getActiveBackgroundColor(),
-    legendColor: editor.getActiveLegendColor(),
-  };
-};
+const mapStateToProps = state => ({
+  editor: getEditor(state),
+});
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  handleSectionChange: (section: Section) => {
-    return setActiveSection({ section });
-  },
-
-  handleCaseColorChange: (color: Color.Color, preview: boolean = false) => {
-    return setCaseColor({ color, preview });
-  },
-
-  handleBackgroundColorChange: (color: Color.Color, preview: boolean = false) =>
-    setActiveBackgroundColor({ color, preview }),
-
-  handleLegendColorChange: (color: Color.Color, preview: boolean = false) =>
-    setActiveLegendColor({ color, preview }),
-
-  handleShiftColor: (from: Color.Color, to: Color.Color, preview: boolean = false) =>
-    shiftColor({ from, to, preview }),
-
-  selectKeycapsWithColor: (color: Color.Color) =>
-    _selectKeycapsWithColor({ color }),
+  buildEditor: (config: EditorConfig) => _buildEditor({ config }),
 }, dispatch);
 
-const Editor: React.SFC<PropTypes> = ({
-  keyboard,
-  activeKeys,
-  section,
-  backgroundColor,
-  legendColor,
-  handleSectionChange,
-  handleBackgroundColorChange,
-  handleLegendColorChange,
-  handleCaseColorChange,
-  handleShiftColor,
-  selectKeycapsWithColor,
-}) => (
-  <Component
-    keyboard={keyboard}
-    activeKeys={activeKeys}
-    section={section}
-    backgroundColor={backgroundColor}
-    legendColor={legendColor}
-    handleSectionChange={handleSectionChange}
-    handleBackgroundColorChange={handleBackgroundColorChange}
-    handleLegendColorChange={handleLegendColorChange}
-    handleCaseColorChange={handleCaseColorChange}
-    handleShiftColor={handleShiftColor}
-    selectKeycapsWithColor={selectKeycapsWithColor}
-  />
-);
+type PropTypes = {
+  // from mapStateToProps
+  editor: KeycapEditor,
+
+  // from mapDispatchToProps
+  buildEditor: (config: EditorConfig) => any,
+
+  // from router
+  location: {
+    search: string,
+  },
+};
+
+class Editor extends React.PureComponent<PropTypes, {}> {
+  componentWillMount() {
+    const { buildEditor, location } = this.props;
+    const colors = extractColors(location.search) || {
+      base: {
+        background: Color('#ACA693'),
+        legend: Color('#171718'),
+      },
+      modifier: {
+        background: Color('#67635B'),
+        legend: Color('#171718'),
+      },
+      overrides: Map({
+        ESC: {
+          background: Color('#8D242F'),
+          legend: Color('#171718'),
+        },
+      })
+    }
+    buildEditor({ colors });
+  }
+
+  render() {
+    const { editor } = this.props;
+    return <Container editor={editor} />
+  }
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(Editor);

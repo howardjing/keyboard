@@ -341,19 +341,19 @@ class Keyboard extends Record({
   caseColor: Color('#2d2d2d'),
 }) {
   static build({
-    baseColor,
-    modifierColor,
+    base,
+    modifier,
     overrides,
   }: {
-    baseColor: KeycapColor,
-    modifierColor: KeycapColor,
+    base: KeycapColor,
+    modifier: KeycapColor,
     overrides: Map<string, KeycapColor>,
   } = {
-    baseColor: {
+    base: {
       background: Color('#393B3B'),
       legend: Color('#fff'),
     },
-    modifierColor: {
+    modifier: {
       background: Color('#393B3B'),
       legend: Color('#fff'),
     },
@@ -368,8 +368,8 @@ class Keyboard extends Record({
     const modifierKeys = getModifiers(contextual, alphanumeric, navigation, arrows);
 
     const keycaps = overrideColors(
-      addColor(baseKeys, baseColor.background, baseColor.legend).concat(
-        addColor(modifierKeys, modifierColor.background, modifierColor.legend)
+      addColor(baseKeys, base.background, base.legend).concat(
+        addColor(modifierKeys, modifier.background, modifier.legend)
       ) as List<Keycap>,
       overrides,
     );
@@ -387,21 +387,21 @@ class Keyboard extends Record({
   }
 
   getColors(): {
-    baseColor: KeycapColor,
-    modifierColor: KeycapColor,
+    base: KeycapColor,
+    modifier: KeycapColor,
     overrides: Map<string, KeycapColor>,
   } {
-    const base = this.getBase();
-    const modifiers = this.getModifiers();
+    const baseKeys = this.getBase();
+    const modifiersKeys = this.getModifiers();
 
-    const baseColor = mostCommonColor(base);
-    const modifierColor = mostCommonColor(modifiers);
-    const baseOverrides = findOverrides(base, baseColor);
-    const modifierOverrides = findOverrides(modifiers, modifierColor);
+    const baseColor = mostCommonColor(baseKeys);
+    const modifierColor = mostCommonColor(modifiersKeys);
+    const baseOverrides = findOverrides(baseKeys, baseColor);
+    const modifierOverrides = findOverrides(modifiersKeys, modifierColor);
 
     return {
-      baseColor,
-      modifierColor,
+      base: baseColor,
+      modifier: modifierColor,
       overrides: baseOverrides.merge(modifierOverrides),
     };
   }
