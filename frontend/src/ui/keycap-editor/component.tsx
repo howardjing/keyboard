@@ -106,7 +106,7 @@ class KeycapEditor extends React.PureComponent<PropTypes, State> {
 		const backgroundColorString = backgroundColor ? toRgb(backgroundColor) : '';
 		const legendColorString = legendColor ? toRgb(legendColor) : '';
 		const caseColor = keyboard.getCaseColor();
-		const pallet = keyboard.getPallet();
+		const palette = keyboard.getPalette();
 		const shareUrl = buildShareUrl(keyboard);
 
 		return (
@@ -165,8 +165,8 @@ class KeycapEditor extends React.PureComponent<PropTypes, State> {
 						<StyledShare url={shareUrl} />
 					</div>
 					<div>
-					<Header>Pallet</Header>
-						{pallet.map((color, i) => (
+					<Header>Palette</Header>
+						{palette.map((color, i) => (
 							<div key={i}>
 								<ColorInput
 									color={color}

@@ -476,7 +476,7 @@ class Keyboard extends Record({
     return this.get('keycaps').toList();
   }
 
-  getPallet(): List<Color.Color> {
+  getPalette(): List<Color.Color> {
     const keys = this.getKeycaps();
 
     return (Map() as Map<string, Color.Color>).withMutations(map => {
