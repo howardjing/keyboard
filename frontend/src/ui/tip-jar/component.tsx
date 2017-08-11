@@ -5,6 +5,7 @@ import * as CardIcon from 'react-icons/lib/fa/credit-card'
 import FixedAmount from './fixed-amount';
 import CustomAmount from './custom-amount';
 import Input from '../_common/input';
+import IconLabel from '../_common/icon-label';
 import Stripe from '../../api/stripe';
 import { TipData } from '../../api/tip-jar';
 import toDollars from './to-dollars';
@@ -483,13 +484,7 @@ const Submit = styled.button`
   cursor: pointer;
 `;
 
-const IconLabel = styled.span`
-  vertical-align: middle;
 
-  &::before {
-    content: ' ';
-  }
-`;
 
 const CARD_STYLES = {
   base: {

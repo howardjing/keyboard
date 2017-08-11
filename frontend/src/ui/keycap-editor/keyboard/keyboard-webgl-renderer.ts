@@ -117,6 +117,11 @@ class KeyboardWebGlRenderer {
     return this;
   }
 
+  resetCamera(): this {
+    this.controls.reset();
+    return this;
+  }
+
   render(): this {
     this.animate();
     this.renderer.render(this.scene, this.controls.object);

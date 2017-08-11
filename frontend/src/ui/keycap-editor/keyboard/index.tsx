@@ -1,6 +1,9 @@
 import * as React from 'react';
+import styled from 'styled-components';
+import * as CameraIcon from 'react-icons/lib/fa/video-camera';
 import KeyboardRenderer from './keyboard-webgl-renderer';
 import KeyboardModel from '../../../domains/keycap-editor/keyboard';
+import IconLabel from '../../_common/icon-label';
 
 const WIDTH = 1200;
 const HEIGHT = 450;
@@ -9,13 +12,13 @@ class Keyboard extends React.Component<{
   keyboard: KeyboardModel,
 }, {}> {
 
-  resolve: any;
+  private resolve: any;
 
-  renderer: Promise<KeyboardRenderer> = new Promise((resolve) => {
+  private renderer: Promise<KeyboardRenderer> = new Promise((resolve) => {
     this.resolve = resolve;
   }) as Promise<KeyboardRenderer>;
 
-  handleCanvas = (el: HTMLCanvasElement) => {
+  private handleCanvas = (el: HTMLCanvasElement) => {
     if (!el) { return; }
     const { keyboard } = this.props;
     setTimeout(() => {
@@ -37,19 +40,37 @@ class Keyboard extends React.Component<{
     this.renderer.then(renderer => renderer.cleanup());
   }
 
-  render() {
-    return (
-      <canvas
-        style={{
-          cursor: 'pointer',
-          width: `${WIDTH}px`,
-          height: `${HEIGHT}px`,
-        }}
-        ref={this.handleCanvas}
-      />
-    );
+  private resetCamera = () => {
+    this.renderer.then(renderer => renderer.resetCamera());
   }
 
+  render() {
+    return (
+      <Wrapper>
+        <canvas
+          style={{
+            cursor: 'pointer',
+            width: `${WIDTH}px`,
+            height: `${HEIGHT}px`,
+          }}
+          ref={this.handleCanvas}
+        />
+        <Button onClick={this.resetCamera}><CameraIcon /><IconLabel>Recenter</IconLabel></Button>
+      </Wrapper>
+    );
+  }
 }
+
+const Wrapper = styled.div`
+  position: relative;
+`
+
+const Button = styled.button`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  padding: 5px 10px;
+  cursor: pointer;
+`;
 
 export default Keyboard;

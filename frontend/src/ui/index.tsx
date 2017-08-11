@@ -9,6 +9,8 @@ import * as HomeIcon from 'react-icons/lib/fa/home';
 import * as MoneyIcon from 'react-icons/lib/fa/money';
 import Editor from './keycap-editor';
 import TipJar from './tip-jar';
+import IconLabel from './_common/icon-label';
+
 injectGlobal`
   body {
     font-family: 'Roboto', sans-serif;
@@ -29,7 +31,7 @@ const App = ({
   <Router>
     <AppWrapper>
       <Nav>
-        <div><NavLink to="/"><HomeIcon /><Item>home</Item></NavLink></div>
+        <div><NavLink to="/"><HomeIcon /><IconLabel>home</IconLabel></NavLink></div>
       </Nav>
       <ContentWrapper>
         <Content>
@@ -38,7 +40,7 @@ const App = ({
         </Content>
       </ContentWrapper>
       <Footer>
-        <FooterLink to="/tip-jar"><MoneyIcon /><Item>Tip Jar</Item></FooterLink>
+        <FooterLink to="/tip-jar"><MoneyIcon /><IconLabel>Tip Jar</IconLabel></FooterLink>
         <div>© {year} Howard Jing</div>
       </Footer>
     </AppWrapper>
