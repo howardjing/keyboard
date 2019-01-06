@@ -15,7 +15,7 @@ use Mix.Config
 # which you typically run after static files are built.
 config :keeb, KeebWeb.Endpoint,
   load_from_system_env: true,
-  url: [host: "keeb.life", port: 80],
+  url: [host: "keeb.me", port: 80],
   cache_static_manifest: "priv/static/cache_manifest.json",
   server: true
 
